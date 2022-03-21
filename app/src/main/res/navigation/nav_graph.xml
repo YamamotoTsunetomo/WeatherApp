@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/xmlFragment">
+
+    <fragment
+        android:id="@+id/xmlFragment"
+        android:name="com.example.weather.XmlFragment"
+        android:label="fragment_xml"
+        tools:layout="@layout/fragment_xml" >
+        <action
+            android:id="@+id/action_xmlFragment_to_editCitiesFragment"
+            app:destination="@id/editCitiesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editCitiesFragment"
+        android:name="com.example.weather.EditCitiesFragment"
+        android:label="fragment_edit_cities"
+        tools:layout="@layout/fragment_edit_cities" />
+</navigation>
