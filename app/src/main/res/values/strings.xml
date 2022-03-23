@@ -1,15 +1,11 @@
 <resources>
     <string name="app_name">Weather</string>
-    <string name="new_york">New York</string>
     <string name="cc">clear sky</string>
     <string name="weather">Weather</string>
     <string name="status">status</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="compose">Compose</string>
     <string name="get">get</string>
     <string name="re">restart</string>
     <string name="weathers">Weathers</string>
-    <string name="add_remove_city">add/remove city</string>
-    <string name="et_hint">New York...</string>
-    <string name="add_remove">add/remove</string>
+    <string name="et_hint">New York…</string>
+    <string name="edit">Edit</string>
 </resources>

@@ -6,15 +6,15 @@
     android:layout_height="match_parent"
     android:background="@color/subtle_white"
     android:padding="16dp"
-    tools:context=".EditCitiesFragment">
+    tools:context=".ui.edit.EditCitiesFragment">
 
     <TextView
         android:id="@+id/tvEditCitiesHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/add_remove_city"
+        android:text="@string/edit"
         android:textColor="@color/one_dark"
-        android:textSize="30sp"
+        android:textSize="50sp"
         app:layout_constraintBottom_toTopOf="@+id/etField"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

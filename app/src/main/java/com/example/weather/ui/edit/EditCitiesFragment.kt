@@ -1,4 +1,4 @@
-package com.example.weather
+package com.example.weather.ui.edit
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.example.weather.databinding.FragmentEditCitiesBinding
+import com.example.weather.network.WeatherApiServiceObject
 
 class EditCitiesFragment : Fragment() {
     private lateinit var _binding: FragmentEditCitiesBinding
@@ -21,7 +22,7 @@ class EditCitiesFragment : Fragment() {
 
         binding.btnAdd.setOnClickListener {
             if (binding.etField.text.isNotBlank()) {
-                Values.CITIES.add(binding.etField.text.toString())
+                WeatherApiServiceObject.CITIES.add(binding.etField.text.toString())
                 binding.etField.text.clear()
             } else {
                 Toast.makeText(requireContext(), "Fill the Field!", Toast.LENGTH_SHORT).show()
@@ -31,10 +32,10 @@ class EditCitiesFragment : Fragment() {
         binding.btnRemove.setOnClickListener {
             if (binding.etField.text.isNotBlank()) {
                 val city = binding.etField.text.toString()
-                if (city !in Values.CITIES)
+                if (city !in WeatherApiServiceObject.CITIES)
                     Toast.makeText(requireContext(), "No Such City!", Toast.LENGTH_SHORT).show()
                 else {
-                    Values.CITIES.remove(city)
+                    WeatherApiServiceObject.CITIES.remove(city)
                     binding.etField.text.clear()
                 }
             } else {

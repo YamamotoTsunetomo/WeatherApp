@@ -6,7 +6,7 @@
         android:title="@string/weathers" />
     <item
         android:id="@+id/editCitiesFragment"
-        android:icon="@drawable/ic_add"
-        android:title="@string/add_remove" />
+        android:icon="@drawable/ic_edit"
+        android:title="@string/edit" />
 
 </menu>

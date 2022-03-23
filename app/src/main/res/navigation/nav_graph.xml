@@ -7,16 +7,16 @@
 
     <fragment
         android:id="@+id/xmlFragment"
-        android:name="com.example.weather.XmlFragment"
+        android:name="com.example.weather.ui.weather.WeatherFragment"
         android:label="fragment_xml"
-        tools:layout="@layout/fragment_xml" >
+        tools:layout="@layout/fragment_weather" >
         <action
             android:id="@+id/action_xmlFragment_to_editCitiesFragment"
             app:destination="@id/editCitiesFragment" />
     </fragment>
     <fragment
         android:id="@+id/editCitiesFragment"
-        android:name="com.example.weather.EditCitiesFragment"
+        android:name="com.example.weather.ui.edit.EditCitiesFragment"
         android:label="fragment_edit_cities"
         tools:layout="@layout/fragment_edit_cities" />
 </navigation>

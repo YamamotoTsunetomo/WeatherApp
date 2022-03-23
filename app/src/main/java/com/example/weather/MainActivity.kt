@@ -1,7 +1,6 @@
 package com.example.weather
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -9,13 +8,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.weather.api.OpenWeatherMapService
 import com.example.weather.databinding.ActivityMainBinding
-import com.example.weather.model.OpenWeatherMapResponseData
-import com.example.weather.model.WeatherUIModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 class MainActivity : AppCompatActivity() {

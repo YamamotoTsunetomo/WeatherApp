@@ -10,4 +10,5 @@
     <color name="subtle_white">#f1f1f1</color>
     <color name="gray">#333</color>
     <color name="one_dark">#282c34</color>
+    <color name="one_foreground">#abb2bf</color>
 </resources>
