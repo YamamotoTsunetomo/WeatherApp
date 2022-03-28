@@ -5,24 +5,37 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.weather.model.OpenWeatherMapResponseData
-import com.example.weather.model.WeatherUIModel
+import com.example.weather.model.WeatherUI
 import com.example.weather.network.WeatherApiServiceObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.math.roundToInt
 
 
 class WeatherViewModel : ViewModel() {
 
-    val weathers: LiveData<MutableList<WeatherUIModel>>
+    val weathers: LiveData<MutableList<WeatherUI>>
         get() = _weathers
 
-    private val _weathers = MutableLiveData<MutableList<WeatherUIModel>>()
+    private val _weathers = MutableLiveData<MutableList<WeatherUI>>(mutableListOf())
 
+    fun addWeather(w: WeatherUI) {
+        _weathers.value?.add(w)
+    }
+
+    fun hasBeenHandled(): Boolean {
+        weathers.value?.let {
+            return it.size == WeatherApiServiceObject.CITIES.size
+        }
+        return false
+    }
+
+    private val kelvinToCelsius = fun(d: Double) = (d - 273.15).roundToInt().toString() + "\u2103"
 
     private fun handleResponse(
         response: Response<OpenWeatherMapResponseData>,
-        weatherUiList: MutableList<WeatherUIModel>
+        weatherUiList: MutableList<WeatherUI>,
     ) {
         if (response.isSuccessful) {
             response.body()?.let {
@@ -35,7 +48,7 @@ class WeatherViewModel : ViewModel() {
 
     private fun handleValidResponse(
         response: OpenWeatherMapResponseData,
-        weatherUiList: MutableList<WeatherUIModel>
+        weatherUiList: MutableList<WeatherUI>,
     ) {
         val weather = response.weather.firstOrNull()
         weather?.let {
@@ -44,18 +57,28 @@ class WeatherViewModel : ViewModel() {
             val status = weather.status
             val description = weather.description
             val icon = weather.icon
-
-            weatherUiList.add(WeatherUIModel(locationName, status, description, icon))
-            this._weathers.value = weatherUiList
+            val temperature = kelvinToCelsius(response.temperaturesData.temperature)
+            weatherUiList.add(
+                WeatherUI.WeatherUIModel(
+                    locationName,
+                    status,
+                    description,
+                    icon,
+                    temperature,
+                )
+            )
         }
+
+        this._weathers.value = weatherUiList
     }
 
     fun setWeathers(
         cities: List<String>,
     ) {
 
-        val result = mutableListOf<WeatherUIModel>()
+        val result = mutableListOf<WeatherUI>()
         cities.forEach { city ->
+
             WeatherApiServiceObject.weatherApiService
                 .getWeather(city, WeatherApiServiceObject.TOKEN)
                 .enqueue(object : Callback<OpenWeatherMapResponseData> {
@@ -64,10 +87,14 @@ class WeatherViewModel : ViewModel() {
                         response: Response<OpenWeatherMapResponseData>
                     ) = handleResponse(response, result)
 
-                    override fun onFailure(call: Call<OpenWeatherMapResponseData>, t: Throwable) {
+                    override fun onFailure(
+                        call: Call<OpenWeatherMapResponseData>,
+                        t: Throwable
+                    ) {
                         Log.d("OpenWeatherMapResponse", t.toString())
                     }
                 })
+
         }
 
     }

@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/subtle_white"
-    android:padding="16dp"
+    android:background="@color/nord_whitish"
     tools:context=".ui.weather.WeatherFragment">
 
 
@@ -14,9 +13,8 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="40dp"
-        android:background="@color/subtle_white"
+        android:layout_marginBottom="70dp"
+        android:background="@color/nord_whitish"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/item_weather" />

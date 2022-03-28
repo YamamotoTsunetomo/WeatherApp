@@ -1,46 +1,42 @@
 package com.example.weather.ui.edit
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.weather.databinding.FragmentEditCitiesBinding
-import com.example.weather.network.WeatherApiServiceObject
+import com.example.weather.ui.edit.vm.EditCitiesViewModel
 
 class EditCitiesFragment : Fragment() {
+
     private lateinit var _binding: FragmentEditCitiesBinding
+
+    private lateinit var viewModel: EditCitiesViewModel
+
     val binding: FragmentEditCitiesBinding
-    get() = _binding
+        get() = _binding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentEditCitiesBinding.inflate(inflater, container, false)
+        viewModel = ViewModelProvider(this).get(EditCitiesViewModel::class.java)
 
         binding.btnAdd.setOnClickListener {
-            if (binding.etField.text.isNotBlank()) {
-                WeatherApiServiceObject.CITIES.add(binding.etField.text.toString())
-                binding.etField.text.clear()
-            } else {
-                Toast.makeText(requireContext(), "Fill the Field!", Toast.LENGTH_SHORT).show()
-            }
+            viewModel.btnAddOnClickListener(
+                binding.etField,
+                requireContext()
+            )
         }
 
         binding.btnRemove.setOnClickListener {
-            if (binding.etField.text.isNotBlank()) {
-                val city = binding.etField.text.toString()
-                if (city !in WeatherApiServiceObject.CITIES)
-                    Toast.makeText(requireContext(), "No Such City!", Toast.LENGTH_SHORT).show()
-                else {
-                    WeatherApiServiceObject.CITIES.remove(city)
-                    binding.etField.text.clear()
-                }
-            } else {
-                Toast.makeText(requireContext(), "Fill the Field!", Toast.LENGTH_SHORT).show()
-            }
+            viewModel.btnRemoveOnClickListener(
+                binding.etField,
+                requireContext()
+            )
         }
 
         return binding.root

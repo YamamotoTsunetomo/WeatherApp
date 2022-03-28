@@ -8,4 +8,6 @@
     <string name="weathers">Weathers</string>
     <string name="et_hint">New York…</string>
     <string name="edit">Edit</string>
+    <string name="btn_add_text">Add</string>
+    <string name="btn_remove_text">Remove</string>
 </resources>

@@ -8,11 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.weather.extensions.GlideImageLoader
+import com.example.weather.databinding.FragmentWeatherBinding
+import com.example.weather.model.WeatherUI
+import com.example.weather.network.WeatherApiServiceObject
 import com.example.weather.ui.weather.adapter.WeatherAdapter
 import com.example.weather.ui.weather.vm.WeatherViewModel
-import com.example.weather.databinding.FragmentWeatherBinding
-import com.example.weather.network.WeatherApiServiceObject
+import com.example.weather.util.GlideImageLoader
 
 class WeatherFragment : Fragment() {
 
@@ -33,11 +34,16 @@ class WeatherFragment : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recycler.adapter = weatherAdapter
 
-        viewModel.setWeathers(WeatherApiServiceObject.CITIES)
-        viewModel.weathers.observe(viewLifecycleOwner) {
-                weatherAdapter.setData(it)
-            }
+        if (!viewModel.hasBeenHandled()) {
+            viewModel.setWeathers(WeatherApiServiceObject.CITIES)
         }
+
+
+        viewModel.weathers.observe(viewLifecycleOwner) {
+            weatherAdapter.setData(viewModel.weathers.value!!)
+        }
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

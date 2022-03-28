@@ -1,4 +1,4 @@
-package com.example.weather.extensions
+package com.example.weather.util
 
 import android.content.Context
 import android.widget.ImageView
