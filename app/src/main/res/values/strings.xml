@@ -10,4 +10,7 @@
     <string name="edit">Edit</string>
     <string name="btn_add_text">Add</string>
     <string name="btn_remove_text">Remove</string>
+    <string name="fill_the_field_toast">Fill the field!</string>
+    <string name="no_such_city_toast">No such city!</string>
+    <string name="go_back">go back</string>
 </resources>

@@ -6,10 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.weather.R
 import com.example.weather.databinding.FragmentWeatherBinding
-import com.example.weather.model.WeatherUI
 import com.example.weather.network.WeatherApiServiceObject
 import com.example.weather.ui.weather.adapter.WeatherAdapter
 import com.example.weather.ui.weather.vm.WeatherViewModel
@@ -17,16 +18,29 @@ import com.example.weather.util.GlideImageLoader
 
 class WeatherFragment : Fragment() {
 
-    private lateinit var _binding: FragmentWeatherBinding
     private lateinit var viewModel: WeatherViewModel
     private lateinit var recycler: RecyclerView
+
+    private var _binding: FragmentWeatherBinding? = null
 
     private val weatherAdapter by lazy {
         WeatherAdapter(layoutInflater, GlideImageLoader(requireContext()), requireContext())
     }
 
     val binding: FragmentWeatherBinding
-        get() = _binding
+        get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+
+        _binding = FragmentWeatherBinding.inflate(inflater, container, false)
+        recycler = binding.recyclerView
+        viewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
+
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
@@ -43,18 +57,15 @@ class WeatherFragment : Fragment() {
             weatherAdapter.setData(viewModel.weathers.value!!)
         }
 
+        binding.btnNavigateToEdit.setOnClickListener {
+            Navigation.findNavController(binding.root).navigate(R.id.action_go_to_edit)
+        }
+
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentWeatherBinding.inflate(inflater, container, false)
-        recycler = binding.recyclerView
-        viewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
-
-
-
-        return binding.root
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
+
 }

@@ -20,10 +20,6 @@ class WeatherViewModel : ViewModel() {
 
     private val _weathers = MutableLiveData<MutableList<WeatherUI>>(mutableListOf())
 
-    fun addWeather(w: WeatherUI) {
-        _weathers.value?.add(w)
-    }
-
     fun hasBeenHandled(): Boolean {
         weathers.value?.let {
             return it.size == WeatherApiServiceObject.CITIES.size
@@ -74,9 +70,9 @@ class WeatherViewModel : ViewModel() {
 
     fun setWeathers(
         cities: List<String>,
+        weatherUiList: MutableList<WeatherUI> = mutableListOf()
     ) {
 
-        val result = mutableListOf<WeatherUI>()
         cities.forEach { city ->
 
             WeatherApiServiceObject.weatherApiService
@@ -85,7 +81,7 @@ class WeatherViewModel : ViewModel() {
                     override fun onResponse(
                         call: Call<OpenWeatherMapResponseData>,
                         response: Response<OpenWeatherMapResponseData>
-                    ) = handleResponse(response, result)
+                    ) = handleResponse(response, weatherUiList)
 
                     override fun onFailure(
                         call: Call<OpenWeatherMapResponseData>,
@@ -94,7 +90,6 @@ class WeatherViewModel : ViewModel() {
                         Log.d("OpenWeatherMapResponse", t.toString())
                     }
                 })
-
         }
 
     }

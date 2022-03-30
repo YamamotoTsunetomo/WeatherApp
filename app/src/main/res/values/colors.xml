@@ -11,4 +11,5 @@
     <color name="gray">#333</color>
     <color name="nord_black">#2E3440</color>
     <color name="nord_whitish">#D8DEE9</color>
+    <color name="nord_subtle_blue">#5E81AC</color>
 </resources>

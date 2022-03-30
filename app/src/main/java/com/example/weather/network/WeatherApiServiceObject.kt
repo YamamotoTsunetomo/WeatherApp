@@ -24,5 +24,4 @@ object WeatherApiServiceObject {
         "Baku", "New York", "Kyiv", "Atlanta",
         "Detroit", "Kutaisi", "Paris", "London"
     )
-
 }
