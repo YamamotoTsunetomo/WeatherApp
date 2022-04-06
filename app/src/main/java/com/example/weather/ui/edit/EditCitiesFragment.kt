@@ -1,7 +1,6 @@
 package com.example.weather.ui.edit
 
 import android.os.Bundle
-import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,29 +33,32 @@ class EditCitiesFragment : Fragment() {
         return binding.root
     }
 
+    private fun initObservers() {
+        viewModel.showToast.observe(viewLifecycleOwner) {
+            if (!it.hasBeenHandled) {
+                showToast()
+                it.handle()
+            }
+        }
+
+        viewModel.clearCityField.observe(viewLifecycleOwner) {
+            binding.etField.text.clear()
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnAdd.setOnClickListener {
-            val cityFieldText = binding.etField.text
+        initObservers()
 
-            if (hasFilled(cityFieldText)) {
-                viewModel.addCity(cityFieldText.toString())
-                cityFieldText.clear()
-            } else showToast()
+        binding.btnAdd.setOnClickListener {
+            val cityFieldText = binding.etField.text.toString()
+            viewModel.onAddClicked(cityFieldText)
         }
 
         binding.btnRemove.setOnClickListener {
-            val cityFieldText = binding.etField.text
-
-            if (hasFilled(cityFieldText)) {
-                if (!viewModel.existsCity(cityFieldText.toString()))
-                    showToast(getString(R.string.no_such_city_toast))
-                else {
-                    viewModel.removeCity(cityFieldText.toString())
-                    cityFieldText.clear()
-                }
-            } else showToast()
+            val cityFieldText = binding.etField.text.toString()
+            viewModel.onRemoveClicked(cityFieldText)
         }
 
         binding.btnGoBack.setOnClickListener {
@@ -71,8 +73,6 @@ class EditCitiesFragment : Fragment() {
 
     private fun showToast(msg: String = getString(R.string.fill_the_field_toast)) =
         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-
-    private fun hasFilled(et: Editable) = et.isNotBlank()
 
 
 }
