@@ -6,23 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.R
 import com.example.weather.databinding.FragmentWeatherBinding
-import com.example.weather.network.WeatherApiServiceObject
+import com.example.weather.util.TemporaryConstants
 import com.example.weather.ui.weather.adapter.WeatherAdapter
 import com.example.weather.ui.weather.vm.WeatherViewModel
 import com.example.weather.util.GlideImageLoader
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class WeatherFragment : Fragment() {
 
-    private lateinit var viewModel: WeatherViewModel
     private lateinit var recycler: RecyclerView
 
     private var _binding: FragmentWeatherBinding? = null
+
+    private val weatherViewModel: WeatherViewModel by viewModel()
 
     private val weatherAdapter by lazy {
         WeatherAdapter(
@@ -49,7 +50,6 @@ class WeatherFragment : Fragment() {
 
         _binding = FragmentWeatherBinding.inflate(inflater, container, false)
         recycler = binding.recyclerView
-        viewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
 
         return binding.root
     }
@@ -60,13 +60,13 @@ class WeatherFragment : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recycler.adapter = weatherAdapter
 
-        if (!viewModel.hasBeenHandled()) {
-            viewModel.setWeathers(WeatherApiServiceObject.CITIES)
+        if (!weatherViewModel.hasBeenHandled()) {
+            weatherViewModel.setWeathers(TemporaryConstants.CITIES)
         }
 
 
-        viewModel.weathers.observe(viewLifecycleOwner) {
-            weatherAdapter.setData(viewModel.weathers.value!!)
+        weatherViewModel.weathers.observe(viewLifecycleOwner) {
+            weatherAdapter.setData(weatherViewModel.weathers.value!!)
         }
 
         binding.btnNavigateToEdit.setOnClickListener {
