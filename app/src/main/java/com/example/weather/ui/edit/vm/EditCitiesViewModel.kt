@@ -2,7 +2,7 @@ package com.example.weather.ui.edit.vm
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.weather.network.WeatherApiServiceObject
+import com.example.weather.util.TemporaryConstants
 import com.example.weather.util.Event
 
 
@@ -11,11 +11,11 @@ class EditCitiesViewModel : ViewModel() {
     val showToast = MutableLiveData<Event<String>>()
     val clearCityField = MutableLiveData<Event<Unit>>()
 
-    val removeCity = fun(city: String) = WeatherApiServiceObject.CITIES.remove(city)
+    val removeCity = fun(city: String) = TemporaryConstants.CITIES.remove(city)
 
-    val addCity = fun(city: String) = WeatherApiServiceObject.CITIES.add(city)
+    val addCity = fun(city: String) = TemporaryConstants.CITIES.add(city)
 
-    val existsCity = fun(city: String) = city in WeatherApiServiceObject.CITIES
+    val existsCity = fun(city: String) = city in TemporaryConstants.CITIES
 
     fun onAddClicked(cityFieldText: String) {
         if (hasFilled(cityFieldText)) {

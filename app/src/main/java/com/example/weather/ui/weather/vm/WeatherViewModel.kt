@@ -6,14 +6,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.weather.model.OpenWeatherMapResponseData
 import com.example.weather.model.WeatherUIModel
-import com.example.weather.network.WeatherApiServiceObject
+import com.example.weather.network.OpenWeatherMapService
+import com.example.weather.util.TemporaryConstants
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import kotlin.math.roundToInt
 
 
-class WeatherViewModel : ViewModel() {
+class WeatherViewModel(
+    private val weatherApiService: OpenWeatherMapService,
+    private val token: String
+) : ViewModel() {
 
     val weathers: LiveData<MutableList<WeatherUIModel>>
         get() = _weathers
@@ -22,7 +26,7 @@ class WeatherViewModel : ViewModel() {
 
     fun hasBeenHandled(): Boolean {
         weathers.value?.let {
-            return it.size == WeatherApiServiceObject.CITIES.size
+            return it.size == TemporaryConstants.CITIES.size
         }
         return false
     }
@@ -71,12 +75,10 @@ class WeatherViewModel : ViewModel() {
     fun setWeathers(
         cities: List<String>,
         weatherUiList: MutableList<WeatherUIModel> = mutableListOf()
-    ) {
-
+    )  {
         cities.forEach { city ->
-
-            WeatherApiServiceObject.weatherApiService
-                .getWeather(city, WeatherApiServiceObject.TOKEN)
+            weatherApiService
+                .getWeather(city, token)
                 .enqueue(object : Callback<OpenWeatherMapResponseData> {
                     override fun onResponse(
                         call: Call<OpenWeatherMapResponseData>,
