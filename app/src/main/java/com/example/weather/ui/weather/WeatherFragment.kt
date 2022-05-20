@@ -1,5 +1,9 @@
 package com.example.weather.ui.weather
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -62,10 +66,13 @@ class WeatherFragment : Fragment() {
 
         setOnSwipeDelete()
 
-        if (!weatherViewModel.hasBeenHandled) {
+        if (!weatherViewModel.hasDataBeenSet) {
             lifecycleScope.launch {
-                weatherViewModel.setWeathersFromApiToDatabase()
-                weatherViewModel.handle()
+                if (isNetworkActive())
+                    weatherViewModel.setWeathersFromApiAndStoreToDatabase()
+                else
+                    weatherViewModel.setWeathersFromDatabase()
+                weatherViewModel.handleSetData()
             }
         }
 
@@ -100,11 +107,35 @@ class WeatherFragment : Fragment() {
                 val position = viewHolder.adapterPosition
                 weatherViewModel.removeWeather(position)
                 weatherAdapter.removeItem(position)
-                weatherViewModel.hasItemBeenRemoved = false
+                weatherViewModel.handleRemove(false)
             }
 
         }).attachToRecyclerView(binding.recyclerView)
     }
+
+    private fun isNetworkActive(): Boolean {
+        val connectivityManager = (requireActivity()
+            .getSystemService(Context.CONNECTIVITY_SERVICE) as (ConnectivityManager))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val capabilities = connectivityManager
+                .getNetworkCapabilities(connectivityManager.activeNetwork)
+                ?: return false
+            return when {
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                else -> false
+            }
+        } else {
+            if (connectivityManager.activeNetworkInfo != null &&
+                connectivityManager.activeNetworkInfo!!
+                    .isConnectedOrConnecting
+            )
+                return true
+        }
+        return false
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

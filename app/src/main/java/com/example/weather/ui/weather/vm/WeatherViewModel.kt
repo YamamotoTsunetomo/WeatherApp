@@ -24,40 +24,44 @@ class WeatherViewModel(
     private val token: String
 ) : ViewModel() {
 
-    val weathers: LiveData<MutableList<WeatherUIModel>>
-        get() = _weathers
-
-    var hasItemBeenRemoved = false
-
-    private var _hasBeenHandled = false
-
-    val hasBeenHandled
-        get() = _hasBeenHandled
-
-    val handle: () -> Unit = { _hasBeenHandled = true }
-
+    // LiveData
     private val weatherList = mutableListOf<WeatherUIModel>()
     private val _weathers = MutableLiveData(weatherList)
+    val weathers: LiveData<MutableList<WeatherUIModel>> get() = _weathers
 
+    // Handlers
+    private var _hasItemBeenRemoved = false
+    val hasItemBeenRemoved get() = _hasItemBeenRemoved
+    val handleRemove: (Boolean) -> Unit = { _hasItemBeenRemoved = it }
+
+    private var _hasDataBeenSet = false
+    val hasDataBeenSet get() = _hasDataBeenSet
+    val handleSetData: () -> Unit = { _hasDataBeenSet = true }
+
+    // Util
     private val kelvinToCelsius = { d: Double -> (d - 273.15).roundToInt().toString() + "\u2103" }
 
-    suspend fun setWeathersFromApiToDatabase() =
-        getWeathersFromDatabase().await()
-            .forEach { city -> fetchWeatherAndAddToDatabase(city.locationName) }
+    // Set
+    suspend fun setWeathersFromApiAndStoreToDatabase() =
+        getWeathersFromDatabaseAsync().await()
+            .forEach { city -> getWeatherFromApiAndAddToDatabase(city.locationName) }
 
-
-    fun getWeathersFromDatabase() = viewModelScope.async {
-        weatherDao.getWeathers()
+    suspend fun setWeathersFromDatabase() {
+        getWeathersFromDatabaseAsync().await()
+            .forEach { city ->
+                addWeatherToWeatherList(ModelEntityUtils.fromEntityToModel(city))
+                _weathers.value = weatherList
+            }
     }
 
+    // Add
+    private fun addWeatherToDatabase(weatherEntity: WeatherEntity) =
+        viewModelScope.launch { weatherDao.addCity(weatherEntity) }
 
-    fun removeWeather(position: Int) {
-        hasItemBeenRemoved = true
-        val model = weatherList[position]
-        removeWeatherFromDatabase(ModelEntityUtils.fromModelToEntity(model))
-        removeWeatherFromWeatherList(model)
-    }
+    fun addWeatherToWeatherList(weatherUIModel: WeatherUIModel) =
+        weatherList.add(weatherUIModel)
 
+    // Remove
     private fun removeWeatherFromWeatherList(weatherUIModel: WeatherUIModel) {
         weatherList.remove(weatherUIModel)
         _weathers.value = weatherList
@@ -66,13 +70,19 @@ class WeatherViewModel(
     private fun removeWeatherFromDatabase(weatherEntity: WeatherEntity) =
         viewModelScope.launch { weatherDao.removeCity(weatherEntity) }
 
-    private fun addWeatherToDatabase(weatherEntity: WeatherEntity) =
-        viewModelScope.launch { weatherDao.addCity(weatherEntity) }
+    fun removeWeather(position: Int) {
+        handleRemove(true)
+        val model = weatherList[position]
+        removeWeatherFromDatabase(ModelEntityUtils.fromModelToEntity(model))
+        removeWeatherFromWeatherList(model)
+    }
 
-    fun addWeatherToWeatherList(weatherUIModel: WeatherUIModel) =
-        weatherList.add(weatherUIModel)
+    // Get
+    private fun getWeathersFromDatabaseAsync() = viewModelScope.async {
+        weatherDao.getWeathers()
+    }
 
-    fun fetchWeatherAndAddToDatabase(city: String) {
+    fun getWeatherFromApiAndAddToDatabase(city: String) {
         weatherList.clear()
         weatherApiService.fetchWeather(city, token)
 
@@ -105,6 +115,5 @@ class WeatherViewModel(
             })
 
     }
-
 
 }
