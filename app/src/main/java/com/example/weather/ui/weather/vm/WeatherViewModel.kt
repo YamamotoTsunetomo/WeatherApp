@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.weather.model.OpenWeatherMapResponseData
-import com.example.weather.model.WeatherUI
+import com.example.weather.model.WeatherUIModel
 import com.example.weather.network.WeatherApiServiceObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -15,10 +15,10 @@ import kotlin.math.roundToInt
 
 class WeatherViewModel : ViewModel() {
 
-    val weathers: LiveData<MutableList<WeatherUI>>
+    val weathers: LiveData<MutableList<WeatherUIModel>>
         get() = _weathers
 
-    private val _weathers = MutableLiveData<MutableList<WeatherUI>>(mutableListOf())
+    private val _weathers = MutableLiveData<MutableList<WeatherUIModel>>(mutableListOf())
 
     fun hasBeenHandled(): Boolean {
         weathers.value?.let {
@@ -31,7 +31,7 @@ class WeatherViewModel : ViewModel() {
 
     private fun handleResponse(
         response: Response<OpenWeatherMapResponseData>,
-        weatherUiList: MutableList<WeatherUI>,
+        weatherUiList: MutableList<WeatherUIModel>,
     ) {
         if (response.isSuccessful) {
             response.body()?.let {
@@ -44,7 +44,7 @@ class WeatherViewModel : ViewModel() {
 
     private fun handleValidResponse(
         response: OpenWeatherMapResponseData,
-        weatherUiList: MutableList<WeatherUI>,
+        weatherUiList: MutableList<WeatherUIModel>,
     ) {
         val weather = response.weather.firstOrNull()
         weather?.let {
@@ -55,7 +55,7 @@ class WeatherViewModel : ViewModel() {
             val icon = weather.icon
             val temperature = kelvinToCelsius(response.temperaturesData.temperature)
             weatherUiList.add(
-                WeatherUI.WeatherUIModel(
+                WeatherUIModel(
                     locationName,
                     status,
                     description,
@@ -70,7 +70,7 @@ class WeatherViewModel : ViewModel() {
 
     fun setWeathers(
         cities: List<String>,
-        weatherUiList: MutableList<WeatherUI> = mutableListOf()
+        weatherUiList: MutableList<WeatherUIModel> = mutableListOf()
     ) {
 
         cities.forEach { city ->

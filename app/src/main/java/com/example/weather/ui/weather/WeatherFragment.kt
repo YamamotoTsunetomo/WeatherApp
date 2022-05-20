@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.R
 import com.example.weather.databinding.FragmentWeatherBinding
-import com.example.weather.model.WeatherUI
 import com.example.weather.network.WeatherApiServiceObject
 import com.example.weather.ui.weather.adapter.WeatherAdapter
 import com.example.weather.ui.weather.vm.WeatherViewModel
@@ -26,20 +25,18 @@ class WeatherFragment : Fragment() {
     private var _binding: FragmentWeatherBinding? = null
 
     private val weatherAdapter by lazy {
-        WeatherAdapter(layoutInflater, GlideImageLoader(requireContext()), requireContext(), object : WeatherAdapter.OnClickListener {
-            override fun onItemClick(weatherData: WeatherUI) {
-                val messageBody = when(weatherData) {
-                    is WeatherUI.WeatherUIModel -> { weatherData.locationName }
-                    is WeatherUI.WeatherUICategory -> { weatherData.category }
-                }
-                AlertDialog.Builder(requireContext())
-                    .setTitle("TITLE")
-                    .setMessage(messageBody)
-                    .setPositiveButton("OK") {_, _ ->}
-                    .show()
-            }
-
-        })
+        WeatherAdapter(
+            layoutInflater,
+            GlideImageLoader(requireContext()),
+            requireContext()
+        ) { weatherData ->
+            val messageBody = weatherData.locationName
+            AlertDialog.Builder(requireContext())
+                .setTitle("TITLE")
+                .setMessage(messageBody)
+                .setPositiveButton("OK") { _, _ -> }
+                .show()
+        }
     }
 
     val binding: FragmentWeatherBinding
