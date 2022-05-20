@@ -1,8 +1,12 @@
 package com.example.weather.di
 
+import androidx.room.Room
+import com.example.weather.db.WeatherDatabase
 import com.example.weather.network.OpenWeatherMapService
 import com.example.weather.ui.weather.vm.WeatherViewModel
+import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -26,4 +30,18 @@ val weatherApiServiceModule = module {
 
 val viewModelModule = module {
     viewModelOf(::WeatherViewModel)
+}
+
+val databaseModule = module {
+    single {
+        Room.databaseBuilder(
+            androidApplication(),
+            WeatherDatabase::class.java,
+            "db"
+        ).build()
+    }
+}
+
+val weatherDaoModule = module {
+    single { get<WeatherDatabase>().weatherDao }
 }
