@@ -10,6 +10,9 @@ interface WeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addCity(weatherEntity: WeatherEntity)
 
+    @Query("SELECT * FROM weathers WHERE locationName=:locationName")
+    suspend fun getByLocationName(locationName: String): WeatherEntity?
+
     @Delete
     suspend fun removeCity(weatherEntity: WeatherEntity)
 }

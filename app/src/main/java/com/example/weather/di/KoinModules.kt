@@ -29,7 +29,7 @@ val weatherApiServiceModule = module {
 }
 
 val viewModelModule = module {
-    viewModelOf(::WeatherViewModel)
+    singleOf(::WeatherViewModel)
 }
 
 val databaseModule = module {

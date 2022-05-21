@@ -9,10 +9,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +22,7 @@ import com.example.weather.databinding.FragmentWeatherBinding
 import com.example.weather.ui.weather.adapter.WeatherAdapter
 import com.example.weather.ui.weather.vm.WeatherViewModel
 import com.example.weather.util.GlideImageLoader
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -31,6 +33,7 @@ class WeatherFragment : Fragment() {
     private var _binding: FragmentWeatherBinding? = null
 
     private val weatherViewModel: WeatherViewModel by viewModel()
+    private var hasLoaded = false
 
     private val weatherAdapter by lazy {
         WeatherAdapter(
@@ -59,38 +62,72 @@ class WeatherFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initRecycler()
+        handleRequestLoadingScreen()
+        initObservers()
+
+        binding.btnNavigateToEdit.setOnClickListener {
+            findNavController().navigate(R.id.action_weatherFragment_to_addCityFragment)
+        }
+    }
+
+    private fun handleRequestLoadingScreen() {
+        if (!weatherViewModel.hasBeenSet) {
+            Log.d("VIEWMODELVIEWMODEL", "handleRequestLoadingScreen: ")
+            lifecycleScope.launch {
+                if (isNetworkActive()) {
+                    launch {
+                        weatherViewModel.setWeathersFromApiAndStoreToDatabase()
+                    }.join()
+                    delay(700)
+                } else {
+                    weatherViewModel.setWeathersFromDatabase()
+                    weatherAdapter.setData(weatherViewModel.weathers.value!!)
+                    makeToast(requireContext(), "No Internet. Data may be outdated")
+                }
+                stopLoading()
+                weatherViewModel.handleSet(true)
+            }
+        }
+    }
+
+    private fun initObservers() {
+//        weatherViewModel.weathers.observe(viewLifecycleOwner) {
+//            if (!weatherViewModel.hasBeenRemoved && !weatherViewModel.hasBeenAdded) {
+//                it.forEach { model -> weatherAdapter.addItem(model) }
+////                weatherAdapter.setData(weatherViewModel.weathers.value!!)
+//            }
+//        }
+
+        weatherViewModel.currentAddedItem.observe(viewLifecycleOwner) {
+            if (it.first) {
+                Log.d("WWWWW", it.second!!.locationName)
+                weatherAdapter.addItem(it.second!!)
+                weatherViewModel.setCurrentItem(Pair(false, null))
+                weatherViewModel.handleAdd(false)
+            }
+
+            if (weatherAdapter.itemCount == 0)
+                weatherAdapter.setData(weatherViewModel.weathers.value!!)
+        }
+    }
+
+    private fun initRecycler() {
+        if (weatherViewModel.hasBeenSet)
+            stopLoading()
         recycler = binding.recyclerView
         recycler.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recycler.adapter = weatherAdapter
-
         setOnSwipeDelete()
+    }
 
-        if (!weatherViewModel.hasDataBeenSet) {
-            lifecycleScope.launch {
-                if (isNetworkActive())
-                    weatherViewModel.setWeathersFromApiAndStoreToDatabase()
-                else
-                    weatherViewModel.setWeathersFromDatabase()
-                weatherViewModel.handleSetData()
-            }
-        }
-
-
-        weatherViewModel.weathers.observe(viewLifecycleOwner) {
-            if (!weatherViewModel.hasItemBeenRemoved) {
-                Log.d(
-                    "TAGTAGTAG",
-                    "aaaaa${weatherViewModel.weathers.value!!.map { it.locationName }}"
-                )
-                weatherAdapter.setData(weatherViewModel.weathers.value!!)
-            }
-        }
-
-        binding.btnNavigateToEdit.setOnClickListener {
-            Navigation.findNavController(binding.root).navigate(R.id.action_go_to_edit)
-        }
-
+    private fun stopLoading() {
+        hasLoaded = true
+        binding.tvLoading.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
+        binding.recyclerView.visibility = View.VISIBLE
+        binding.btnNavigateToEdit.visibility = View.VISIBLE
     }
 
     private fun setOnSwipeDelete() {
@@ -135,6 +172,10 @@ class WeatherFragment : Fragment() {
         }
         return false
     }
+
+
+    private fun makeToast(context: Context, text: String) =
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
 
 
     override fun onDestroyView() {

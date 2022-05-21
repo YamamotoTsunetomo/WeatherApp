@@ -1,5 +1,6 @@
 package com.example.weather.ui.weather.vm
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,8 +11,10 @@ import com.example.weather.model.OpenWeatherMapResponseData
 import com.example.weather.model.WeatherUIModel
 import com.example.weather.network.OpenWeatherMapService
 import com.example.weather.util.ModelEntityUtils
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,17 +32,24 @@ class WeatherViewModel(
     private val _weathers = MutableLiveData(weatherList)
     val weathers: LiveData<MutableList<WeatherUIModel>> get() = _weathers
 
+    private val _currentAddedItem =
+        MutableLiveData<Pair<Boolean, WeatherUIModel?>>(Pair(false, null))
+    val currentAddedItem: LiveData<Pair<Boolean, WeatherUIModel?>> get() = _currentAddedItem
+    val setCurrentItem: (Pair<Boolean, WeatherUIModel?>) -> Unit = { _currentAddedItem.value = it }
+
+
     // Handlers
-    private var _hasItemBeenRemoved = false
-    val hasItemBeenRemoved get() = _hasItemBeenRemoved
-    val handleRemove: (Boolean) -> Unit = { _hasItemBeenRemoved = it }
+    private var _hasBeenRemoved = false
+    val hasBeenRemoved get() = _hasBeenRemoved
+    val handleRemove: (Boolean) -> Unit = { _hasBeenRemoved = it }
 
-    private var _hasDataBeenSet = false
-    val hasDataBeenSet get() = _hasDataBeenSet
-    val handleSetData: () -> Unit = { _hasDataBeenSet = true }
+    private var _hasBeenSet = false
+    val hasBeenSet get() = _hasBeenSet
+    val handleSet: (Boolean) -> Unit = { _hasBeenSet = it }
 
-    // Util
-    private val kelvinToCelsius = { d: Double -> (d - 273.15).roundToInt().toString() + "\u2103" }
+    private var _hasBeenAdded = false
+    val hasBeenAdded get() = _hasBeenAdded
+    val handleAdd: (Boolean) -> Unit = { _hasBeenAdded = it }
 
     // Set
     suspend fun setWeathersFromApiAndStoreToDatabase() =
@@ -58,8 +68,18 @@ class WeatherViewModel(
     private fun addWeatherToDatabase(weatherEntity: WeatherEntity) =
         viewModelScope.launch { weatherDao.addCity(weatherEntity) }
 
-    fun addWeatherToWeatherList(weatherUIModel: WeatherUIModel) =
+    private fun addWeatherToWeatherList(weatherUIModel: WeatherUIModel) {
         weatherList.add(weatherUIModel)
+    }
+
+    fun addWeather(weatherUIModel: WeatherUIModel) {
+        Log.d("WWWWW", "adding ${weatherUIModel.locationName}")
+        addWeatherToDatabase(ModelEntityUtils.fromModelToEntity(weatherUIModel))
+        addWeatherToWeatherList(weatherUIModel)
+        _weathers.value = weatherList
+//        if (_hasBeenAdded)
+        setCurrentItem(Pair(true, weatherUIModel))
+    }
 
     // Remove
     private fun removeWeatherFromWeatherList(weatherUIModel: WeatherUIModel) {
@@ -77,13 +97,15 @@ class WeatherViewModel(
         removeWeatherFromWeatherList(model)
     }
 
-    // Get
+
     private fun getWeathersFromDatabaseAsync() = viewModelScope.async {
         weatherDao.getWeathers()
     }
 
     fun getWeatherFromApiAndAddToDatabase(city: String) {
-        weatherList.clear()
+        if (!_hasBeenAdded)
+            weatherList.clear()
+
         weatherApiService.fetchWeather(city, token)
 
             .enqueue(object : Callback<OpenWeatherMapResponseData> {
@@ -105,15 +127,17 @@ class WeatherViewModel(
                                     w.icon,
                                     kelvinToCelsius(resp.temperaturesData.temperature),
                                 )
-
-                                addWeatherToWeatherList(model)
-                                addWeatherToDatabase(ModelEntityUtils.fromModelToEntity(model))
-                                _weathers.value = weatherList
+//                                viewModelScope.launch {
+                                addWeather(model)
+//                                }
                             }
                         }
                 }
             })
 
     }
+
+    // Aux
+    private val kelvinToCelsius = { d: Double -> (d - 273.15).roundToInt().toString() + "\u2103" }
 
 }
