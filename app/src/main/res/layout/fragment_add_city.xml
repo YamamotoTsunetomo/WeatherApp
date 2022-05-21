@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bottom_sheet_dialog_shape"
+    android:padding="32dp"
+    tools:context=".ui.add.AddCityFragment">
+
+    <EditText
+        android:id="@+id/etAddTitle"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginVertical="12dp"
+        android:background="@drawable/field_shape"
+        android:fontFamily="@font/poppins_semibold"
+        android:hint="@string/et_hint"
+        android:inputType="textAutoComplete"
+        android:padding="12dp"
+        android:textAlignment="center"
+        android:textColor="@color/nord_black"
+        android:textColorHint="#888"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnAdd"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginVertical="12dp"
+        android:background="@drawable/navigation_button_shape"
+        android:fontFamily="@font/poppins_black"
+        android:padding="12dp"
+        android:text="@string/btn_add_text"
+        android:textColor="@color/nord_whitish"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etAddTitle" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

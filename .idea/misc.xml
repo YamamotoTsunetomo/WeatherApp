@@ -4,16 +4,23 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.38645833333333335" />
+        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.294" />
         <entry key="app/src/main/res/drawable/bottom_nav_shape.xml" value="0.1035" />
+        <entry key="app/src/main/res/drawable/bottom_sheet_dialog_shape.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/custom_progressbar.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/et_shape.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/field_shape.xml" value="0.119" />
         <entry key="app/src/main/res/drawable/ic_add.xml" value="0.22" />
         <entry key="app/src/main/res/drawable/ic_arrow_back.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_edit.xml" value="0.22" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.294" />
         <entry key="app/src/main/res/drawable/navigation_button_shape.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/weather_item_shape.xml" value="0.103" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/add_city_popup_window.xml" value="0.18" />
+        <entry key="app/src/main/res/layout/fragment_add_city.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_compose.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/fragment_edit_cities.xml" value="0.2921875" />
+        <entry key="app/src/main/res/layout/fragment_edit_cities.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_weather.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_xml.xml" value="0.22" />
         <entry key="app/src/main/res/layout/item_weather.xml" value="0.5" />

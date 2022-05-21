@@ -1,6 +1,7 @@
 package com.example.weather.ui.weather.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,11 +42,6 @@ class WeatherAdapter(
 
     }
 
-    fun setData(weatherData: MutableList<WeatherUIModel>) {
-        this.weatherData.clear()
-        this.weatherData.addAll(weatherData)
-        notifyDataSetChanged()
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         WeatherViewHolder(
@@ -69,6 +65,18 @@ class WeatherAdapter(
     }
 
     override fun getItemCount() = weatherData.count()
+
+    fun setData(weatherData: MutableList<WeatherUIModel>) {
+        this.weatherData.clear()
+        this.weatherData.addAll(weatherData)
+        notifyDataSetChanged()
+    }
+
+    fun addItem(weatherUIModel: WeatherUIModel) {
+        Log.d("ADDCALLED", "addItem: ")
+        weatherData.add(weatherUIModel)
+        notifyItemInserted(itemCount)
+    }
 
     fun removeItem(position: Int) {
         weatherData.removeAt(position)

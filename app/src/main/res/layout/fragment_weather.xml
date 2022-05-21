@@ -9,11 +9,41 @@
     tools:context=".ui.weather.WeatherFragment">
 
 
+    <TextView
+        android:id="@+id/tvLoading"
+        android:layout_width="wrap_content"
+        android:background="@color/nord_whitish"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_bold"
+        android:text="@string/loading"
+        android:textColor="#777"
+        android:textSize="32sp"
+        app:layout_constraintBottom_toTopOf="@id/progressBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:background="@color/nord_whitish"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:progressTint="@color/nord_subtle_blue"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/nord_subtle_blue"
+        android:layout_marginHorizontal="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/nord_whitish"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,9 +58,10 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:background="@drawable/navigation_button_shape"
-        android:drawableStart="@drawable/ic_edit"
+        android:drawableStart="@drawable/ic_add"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

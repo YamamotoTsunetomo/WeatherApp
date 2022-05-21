@@ -11,24 +11,12 @@
         android:label="fragment_xml"
         tools:layout="@layout/fragment_weather" >
         <action
-            android:id="@+id/action_go_to_edit"
-            app:destination="@id/editCitiesFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right"
-            app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/slide_out_right" />
+            android:id="@+id/action_weatherFragment_to_addCityFragment"
+            app:destination="@id/addCityFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/editCitiesFragment"
-        android:name="com.example.weather.ui.edit.EditCitiesFragment"
-        android:label="fragment_edit_cities"
-        tools:layout="@layout/fragment_edit_cities" >
-        <action
-            android:id="@+id/action_go_to_weathers"
-            app:destination="@id/weatherFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right"
-            app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/slide_out_right" />
-    </fragment>
+    <dialog
+        android:id="@+id/addCityFragment"
+        android:name="com.example.weather.ui.add.AddCityFragment"
+        android:label="fragment_add_city"
+        tools:layout="@layout/fragment_add_city" />
 </navigation>
