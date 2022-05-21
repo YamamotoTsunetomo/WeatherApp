@@ -5,7 +5,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,7 +36,6 @@ class WeatherFragment : Fragment() {
 
     private val weatherAdapter by lazy {
         WeatherAdapter(
-            layoutInflater,
             GlideImageLoader(requireContext()),
             requireContext()
         ) { weatherData ->
@@ -73,7 +71,6 @@ class WeatherFragment : Fragment() {
 
     private fun handleRequestLoadingScreen() {
         if (!weatherViewModel.hasBeenSet) {
-            Log.d("VIEWMODELVIEWMODEL", "handleRequestLoadingScreen: ")
             lifecycleScope.launch {
                 if (isNetworkActive()) {
                     launch {
@@ -101,7 +98,6 @@ class WeatherFragment : Fragment() {
 
         weatherViewModel.currentAddedItem.observe(viewLifecycleOwner) {
             if (it.first) {
-                Log.d("WWWWW", it.second!!.locationName)
                 weatherAdapter.addItem(it.second!!)
                 weatherViewModel.setCurrentItem(Pair(false, null))
                 weatherViewModel.handleAdd(false)

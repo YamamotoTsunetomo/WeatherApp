@@ -1,7 +1,6 @@
 package com.example.weather.ui.weather.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,6 @@ import com.example.weather.model.WeatherUIModel
 import com.example.weather.util.ImageLoader
 
 class WeatherAdapter(
-    private val layoutInflater: LayoutInflater,
     private val imageLoader: ImageLoader,
     private val context: Context,
     private val onClickListener: (WeatherUIModel) -> Unit
@@ -73,7 +71,6 @@ class WeatherAdapter(
     }
 
     fun addItem(weatherUIModel: WeatherUIModel) {
-        Log.d("ADDCALLED", "addItem: ")
         weatherData.add(weatherUIModel)
         notifyItemInserted(itemCount)
     }
@@ -84,4 +81,3 @@ class WeatherAdapter(
     }
 
 }
-

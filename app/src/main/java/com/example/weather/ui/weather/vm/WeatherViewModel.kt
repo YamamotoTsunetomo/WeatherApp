@@ -1,6 +1,5 @@
 package com.example.weather.ui.weather.vm
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,10 +10,8 @@ import com.example.weather.model.OpenWeatherMapResponseData
 import com.example.weather.model.WeatherUIModel
 import com.example.weather.network.OpenWeatherMapService
 import com.example.weather.util.ModelEntityUtils
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -73,11 +70,9 @@ class WeatherViewModel(
     }
 
     fun addWeather(weatherUIModel: WeatherUIModel) {
-        Log.d("WWWWW", "adding ${weatherUIModel.locationName}")
         addWeatherToDatabase(ModelEntityUtils.fromModelToEntity(weatherUIModel))
         addWeatherToWeatherList(weatherUIModel)
         _weathers.value = weatherList
-//        if (_hasBeenAdded)
         setCurrentItem(Pair(true, weatherUIModel))
     }
 
@@ -127,9 +122,7 @@ class WeatherViewModel(
                                     w.icon,
                                     kelvinToCelsius(resp.temperaturesData.temperature),
                                 )
-//                                viewModelScope.launch {
                                 addWeather(model)
-//                                }
                             }
                         }
                 }
