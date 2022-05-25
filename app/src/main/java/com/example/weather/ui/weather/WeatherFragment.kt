@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,14 +20,14 @@ import com.example.weather.databinding.FragmentWeatherBinding
 import com.example.weather.ui.weather.adapter.WeatherAdapter
 import com.example.weather.ui.weather.vm.WeatherViewModel
 import com.example.weather.util.GlideImageLoader
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import io.reactivex.disposables.Disposable
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class WeatherFragment : Fragment() {
 
     private lateinit var recycler: RecyclerView
 
+    private val disposables = mutableListOf<Disposable>()
     private var _binding: FragmentWeatherBinding? = null
 
     private val weatherViewModel: WeatherViewModel by viewModel()
@@ -71,31 +70,26 @@ class WeatherFragment : Fragment() {
 
     private fun handleRequestLoadingScreen() {
         if (!weatherViewModel.hasBeenSet) {
-            lifecycleScope.launch {
-                if (isNetworkActive()) {
-                    launch {
-                        weatherViewModel.setWeathersFromApiAndStoreToDatabase()
-                    }.join()
-                    delay(700)
-                } else {
+//            lifecycleScope.launch {
+            if (isNetworkActive()) {
+//                    launch {
+                disposables.add(
+                    weatherViewModel.setWeathersFromApiAndStoreToDatabase()
+                )
+//                Thread.sleep(700)
+            } else {
+                disposables.add(
                     weatherViewModel.setWeathersFromDatabase()
-                    weatherAdapter.setData(weatherViewModel.weathers.value!!)
-                    makeToast(requireContext(), "No Internet. Data may be outdated")
-                }
-                stopLoading()
-                weatherViewModel.handleSet(true)
+                )
+                makeToast(requireContext(), "No Internet. Data may be outdated")
+                weatherAdapter.setData(weatherViewModel.weathers.value!!)
             }
+            stopLoading()
+            weatherViewModel.handleSet(true)
         }
     }
 
     private fun initObservers() {
-//        weatherViewModel.weathers.observe(viewLifecycleOwner) {
-//            if (!weatherViewModel.hasBeenRemoved && !weatherViewModel.hasBeenAdded) {
-//                it.forEach { model -> weatherAdapter.addItem(model) }
-////                weatherAdapter.setData(weatherViewModel.weathers.value!!)
-//            }
-//        }
-
         weatherViewModel.currentAddedItem.observe(viewLifecycleOwner) {
             if (it.first) {
                 weatherAdapter.addItem(it.second!!)
@@ -138,7 +132,9 @@ class WeatherFragment : Fragment() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-                weatherViewModel.removeWeather(position)
+                disposables.add(
+                    weatherViewModel.removeWeather(position)
+                )
                 weatherAdapter.removeItem(position)
                 weatherViewModel.handleRemove(false)
             }
@@ -177,6 +173,7 @@ class WeatherFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        disposables.forEach { if (!it.isDisposed) it.dispose() }
     }
 
 }

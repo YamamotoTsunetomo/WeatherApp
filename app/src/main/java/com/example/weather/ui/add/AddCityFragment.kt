@@ -46,10 +46,8 @@ class AddCityFragment : BottomSheetDialogFragment() {
                 }
                 else -> {
                     weatherViewModel.handleAdd(true)
-                    lifecycleScope.launch {
                         weatherViewModel.getWeatherFromApiAndAddToDatabase(city)
                         dismiss()
-                    }
                 }
             }
         }

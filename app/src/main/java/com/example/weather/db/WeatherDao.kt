@@ -1,18 +1,22 @@
 package com.example.weather.db
 
 import androidx.room.*
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Maybe
+import io.reactivex.Single
 
 @Dao
 interface WeatherDao {
     @Query("SELECT * FROM weathers")
-    suspend fun getWeathers(): List<WeatherEntity>
+    fun getWeathers(): Maybe<List<WeatherEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addCity(weatherEntity: WeatherEntity)
+    fun addCity(weatherEntity: WeatherEntity)
 
     @Query("SELECT * FROM weathers WHERE locationName=:locationName")
-    suspend fun getByLocationName(locationName: String): WeatherEntity?
+    fun getByLocationName(locationName: String): Maybe<WeatherEntity?>
 
     @Delete
-    suspend fun removeCity(weatherEntity: WeatherEntity)
+    fun removeCity(weatherEntity: WeatherEntity)
 }

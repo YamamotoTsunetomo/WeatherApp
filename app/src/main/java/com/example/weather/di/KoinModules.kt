@@ -1,5 +1,10 @@
 package com.example.weather.di
 
+import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import androidx.room.Room
 import com.example.weather.db.WeatherDatabase
 import com.example.weather.network.OpenWeatherMapService
@@ -44,4 +49,31 @@ val databaseModule = module {
 
 val weatherDaoModule = module {
     single { get<WeatherDatabase>().weatherDao }
+}
+
+val networkCheckerModule = module {
+    fun isNetworkActive(app: Application): Boolean {
+        val connectivityManager =
+            (app.getSystemService(Context.CONNECTIVITY_SERVICE) as (ConnectivityManager))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val capabilities = connectivityManager
+                .getNetworkCapabilities(connectivityManager.activeNetwork)
+                ?: return false
+            return when {
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                else -> false
+            }
+        } else {
+            if (connectivityManager.activeNetworkInfo != null &&
+                connectivityManager.activeNetworkInfo!!
+                    .isConnectedOrConnecting
+            )
+                return true
+        }
+        return false
+    }
+
+    single { isNetworkActive(androidApplication()) }
 }
