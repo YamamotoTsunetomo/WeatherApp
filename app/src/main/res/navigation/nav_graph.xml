@@ -16,7 +16,7 @@
     </fragment>
     <dialog
         android:id="@+id/addCityFragment"
-        android:name="com.example.weather.ui.add.AddCityFragment"
+        android:name="com.example.weather.ui.add.AddWeatherFragment"
         android:label="fragment_add_city"
-        tools:layout="@layout/fragment_add_city" />
+        tools:layout="@layout/fragment_add_weather" />
 </navigation>

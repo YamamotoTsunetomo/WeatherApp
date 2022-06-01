@@ -19,6 +19,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/add_city_popup_window.xml" value="0.18" />
         <entry key="app/src/main/res/layout/fragment_add_city.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/fragment_add_weather.xml" value="0.35572916666666665" />
         <entry key="app/src/main/res/layout/fragment_compose.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_edit_cities.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_weather.xml" value="0.33" />
