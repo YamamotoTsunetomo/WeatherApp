@@ -5,7 +5,6 @@ import com.example.weather.db.WeatherDatabase
 import com.example.weather.network.OpenWeatherMapService
 import com.example.weather.ui.weather.vm.WeatherViewModel
 import org.koin.android.ext.koin.androidApplication
-import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import retrofit2.Retrofit

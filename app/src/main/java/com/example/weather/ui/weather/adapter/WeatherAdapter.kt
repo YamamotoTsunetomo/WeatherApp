@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.databinding.ItemWeatherBinding
 import com.example.weather.model.WeatherUIModel
@@ -14,9 +16,10 @@ class WeatherAdapter(
     private val imageLoader: ImageLoader,
     private val context: Context,
     private val onClickListener: (WeatherUIModel) -> Unit
-) : RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() {
+) : ListAdapter<WeatherUIModel, WeatherAdapter.WeatherViewHolder>(DiffCallback()) {
     private val weatherData = mutableListOf<WeatherUIModel>()
     private var lastPosition = -1
+    private var isSetBlocked = false
 
     class WeatherViewHolder(
         private val binding: ItemWeatherBinding,
@@ -65,19 +68,31 @@ class WeatherAdapter(
     override fun getItemCount() = weatherData.count()
 
     fun setData(weatherData: MutableList<WeatherUIModel>) {
-        this.weatherData.clear()
-        this.weatherData.addAll(weatherData)
-        notifyDataSetChanged()
+        if (!isSetBlocked) {
+            this.weatherData.clear()
+            this.weatherData.addAll(weatherData)
+            notifyDataSetChanged()
+        }
+        isSetBlocked = false
     }
 
     fun addItem(weatherUIModel: WeatherUIModel) {
+        isSetBlocked = true
         weatherData.add(weatherUIModel)
         notifyItemInserted(itemCount)
     }
 
     fun removeItem(position: Int) {
+        isSetBlocked = true
         weatherData.removeAt(position)
         notifyItemRemoved(position)
     }
 
+    class DiffCallback : DiffUtil.ItemCallback<WeatherUIModel>() {
+        override fun areItemsTheSame(oldItem: WeatherUIModel, newItem: WeatherUIModel): Boolean =
+            oldItem === newItem
+
+        override fun areContentsTheSame(oldItem: WeatherUIModel, newItem: WeatherUIModel): Boolean =
+            oldItem == newItem
+    }
 }

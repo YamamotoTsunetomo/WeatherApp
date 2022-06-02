@@ -9,8 +9,10 @@ import com.example.weather.db.WeatherEntity
 import com.example.weather.model.OpenWeatherMapResponseData
 import com.example.weather.model.WeatherUIModel
 import com.example.weather.network.OpenWeatherMapService
+import com.example.weather.util.Event
 import com.example.weather.util.ModelEntityUtils
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -24,56 +26,64 @@ class WeatherViewModel(
     private val token: String
 ) : ViewModel() {
 
+    fun fetchData(isNetworkActive: Boolean) = viewModelScope.launch {
+        if (!hasLoaded.value!!) {
+            if (isNetworkActive)
+                setWeathersFromApiAndStoreToDatabase()
+            else setWeathersFromDatabase()
+            delay(700)
+            _hasLoaded.value = true
+        }
+
+    }
+
     // LiveData
     private val weatherList = mutableListOf<WeatherUIModel>()
     private val _weathers = MutableLiveData(weatherList)
     val weathers: LiveData<MutableList<WeatherUIModel>> get() = _weathers
 
-    private val _currentAddedItem =
-        MutableLiveData<Pair<Boolean, WeatherUIModel?>>(Pair(false, null))
-    val currentAddedItem: LiveData<Pair<Boolean, WeatherUIModel?>> get() = _currentAddedItem
-    val setCurrentItem: (Pair<Boolean, WeatherUIModel?>) -> Unit = { _currentAddedItem.value = it }
+    private val _hasLoaded = MutableLiveData(false)
+    val hasLoaded: LiveData<Boolean>
+        get() = _hasLoaded
 
+    private val _addEvent = MutableLiveData(Event<WeatherUIModel?>(null))
+    val addEvent: LiveData<Event<WeatherUIModel?>>
+        get() = _addEvent
 
-    // Handlers
-    private var _hasBeenRemoved = false
-    val hasBeenRemoved get() = _hasBeenRemoved
-    val handleRemove: (Boolean) -> Unit = { _hasBeenRemoved = it }
-
-    private var _hasBeenSet = false
-    val hasBeenSet get() = _hasBeenSet
-    val handleSet: (Boolean) -> Unit = { _hasBeenSet = it }
-
-    private var _hasBeenAdded = false
-    val hasBeenAdded get() = _hasBeenAdded
-    val handleAdd: (Boolean) -> Unit = { _hasBeenAdded = it }
+    private val _removeEvent = MutableLiveData(Event(-1))
+    val removeEvent: LiveData<Event<Int>>
+        get() = _removeEvent
 
     // Set
-    suspend fun setWeathersFromApiAndStoreToDatabase() =
-        getWeathersFromDatabaseAsync().await()
-            .forEach { city -> getWeatherFromApiAndAddToDatabase(city.locationName) }
-
-    suspend fun setWeathersFromDatabase() {
+    private suspend fun setWeathersFromApiAndStoreToDatabase() {
         getWeathersFromDatabaseAsync().await()
             .forEach { city ->
-                addWeatherToWeatherList(ModelEntityUtils.fromEntityToModel(city))
-                _weathers.value = weatherList
+                getWeatherFromApi(city.locationName) { addWeather(it) }
             }
+    }
+
+    private suspend fun setWeathersFromDatabase() {
+        _weathers.value =
+            getWeathersFromDatabaseAsync().await()
+                .map { ModelEntityUtils.fromEntityToModel(it) }
+                .toMutableList()
     }
 
     // Add
     private fun addWeatherToDatabase(weatherEntity: WeatherEntity) =
         viewModelScope.launch { weatherDao.addCity(weatherEntity) }
 
-    private fun addWeatherToWeatherList(weatherUIModel: WeatherUIModel) {
+    private fun addWeather(weatherUIModel: WeatherUIModel) {
+        addWeatherToDatabase(ModelEntityUtils.fromModelToEntity(weatherUIModel))
         weatherList.add(weatherUIModel)
+        _weathers.value = weatherList
     }
 
-    fun addWeather(weatherUIModel: WeatherUIModel) {
-        addWeatherToDatabase(ModelEntityUtils.fromModelToEntity(weatherUIModel))
-        addWeatherToWeatherList(weatherUIModel)
-        _weathers.value = weatherList
-        setCurrentItem(Pair(true, weatherUIModel))
+    fun addWeather(city: String) {
+        getWeatherFromApi(city) {
+            _addEvent.value = Event(it)
+            addWeather(it)
+        }
     }
 
     // Remove
@@ -86,21 +96,21 @@ class WeatherViewModel(
         viewModelScope.launch { weatherDao.removeCity(weatherEntity) }
 
     fun removeWeather(position: Int) {
-        handleRemove(true)
+        _removeEvent.value = Event(position)
         val model = weatherList[position]
         removeWeatherFromDatabase(ModelEntityUtils.fromModelToEntity(model))
         removeWeatherFromWeatherList(model)
     }
 
-
+    // Get
     private fun getWeathersFromDatabaseAsync() = viewModelScope.async {
         weatherDao.getWeathers()
     }
 
-    fun getWeatherFromApiAndAddToDatabase(city: String) {
-        if (!_hasBeenAdded)
-            weatherList.clear()
-
+    private inline fun getWeatherFromApi(
+        city: String,
+        crossinline action: (WeatherUIModel) -> Unit
+    ) {
         weatherApiService.fetchWeather(city, token)
 
             .enqueue(object : Callback<OpenWeatherMapResponseData> {
@@ -122,15 +132,13 @@ class WeatherViewModel(
                                     w.icon,
                                     kelvinToCelsius(resp.temperaturesData.temperature),
                                 )
-                                addWeather(model)
+                                action(model)
                             }
                         }
                 }
             })
-
     }
 
     // Aux
     private val kelvinToCelsius = { d: Double -> (d - 273.15).roundToInt().toString() + "\u2103" }
-
 }

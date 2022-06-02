@@ -3,7 +3,6 @@ package com.example.weather.ui.weather
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +20,6 @@ import com.example.weather.databinding.FragmentWeatherBinding
 import com.example.weather.ui.weather.adapter.WeatherAdapter
 import com.example.weather.ui.weather.vm.WeatherViewModel
 import com.example.weather.util.GlideImageLoader
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -32,7 +30,6 @@ class WeatherFragment : Fragment() {
     private var _binding: FragmentWeatherBinding? = null
 
     private val weatherViewModel: WeatherViewModel by viewModel()
-    private var hasLoaded = false
 
     private val weatherAdapter by lazy {
         WeatherAdapter(
@@ -60,57 +57,40 @@ class WeatherFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initRecycler()
-        handleRequestLoadingScreen()
         initObservers()
-
+        initRecycler()
+        weatherViewModel.fetchData(isNetworkActive())
         binding.btnNavigateToEdit.setOnClickListener {
             findNavController().navigate(R.id.action_weatherFragment_to_addCityFragment)
         }
     }
 
-    private fun handleRequestLoadingScreen() {
-        if (!weatherViewModel.hasBeenSet) {
-            lifecycleScope.launch {
-                if (isNetworkActive()) {
-                    launch {
-                        weatherViewModel.setWeathersFromApiAndStoreToDatabase()
-                    }.join()
-                    delay(700)
-                } else {
-                    weatherViewModel.setWeathersFromDatabase()
-                    weatherAdapter.setData(weatherViewModel.weathers.value!!)
-                    makeToast(requireContext(), "No Internet. Data may be outdated")
-                }
-                stopLoading()
-                weatherViewModel.handleSet(true)
+    private fun initObservers() {
+
+        weatherViewModel.removeEvent.observe(viewLifecycleOwner) {
+            it.getValue()?.let { pos ->
+                if (pos > -1)
+                    weatherAdapter.removeItem(pos)
             }
         }
-    }
 
-    private fun initObservers() {
-//        weatherViewModel.weathers.observe(viewLifecycleOwner) {
-//            if (!weatherViewModel.hasBeenRemoved && !weatherViewModel.hasBeenAdded) {
-//                it.forEach { model -> weatherAdapter.addItem(model) }
-////                weatherAdapter.setData(weatherViewModel.weathers.value!!)
-//            }
-//        }
-
-        weatherViewModel.currentAddedItem.observe(viewLifecycleOwner) {
-            if (it.first) {
-                weatherAdapter.addItem(it.second!!)
-                weatherViewModel.setCurrentItem(Pair(false, null))
-                weatherViewModel.handleAdd(false)
+        weatherViewModel.addEvent.observe(viewLifecycleOwner) {
+            it.getValue()?.let { model ->
+                weatherAdapter.addItem(model)
             }
+        }
 
-            if (weatherAdapter.itemCount == 0)
-                weatherAdapter.setData(weatherViewModel.weathers.value!!)
+        weatherViewModel.hasLoaded.observe(viewLifecycleOwner) {
+            if (it)
+                stopLoading()
+        }
+
+        weatherViewModel.weathers.observe(viewLifecycleOwner) {
+            weatherAdapter.setData(it)
         }
     }
 
     private fun initRecycler() {
-        if (weatherViewModel.hasBeenSet)
-            stopLoading()
         recycler = binding.recyclerView
         recycler.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -119,7 +99,6 @@ class WeatherFragment : Fragment() {
     }
 
     private fun stopLoading() {
-        hasLoaded = true
         binding.tvLoading.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
         binding.recyclerView.visibility = View.VISIBLE
@@ -138,9 +117,9 @@ class WeatherFragment : Fragment() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-                weatherViewModel.removeWeather(position)
-                weatherAdapter.removeItem(position)
-                weatherViewModel.handleRemove(false)
+                lifecycleScope.launch {
+                    weatherViewModel.removeWeather(position)
+                }
             }
 
         }).attachToRecyclerView(binding.recyclerView)
@@ -149,26 +128,16 @@ class WeatherFragment : Fragment() {
     private fun isNetworkActive(): Boolean {
         val connectivityManager = (requireActivity()
             .getSystemService(Context.CONNECTIVITY_SERVICE) as (ConnectivityManager))
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val capabilities = connectivityManager
-                .getNetworkCapabilities(connectivityManager.activeNetwork)
-                ?: return false
-            return when {
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-                else -> false
-            }
-        } else {
-            if (connectivityManager.activeNetworkInfo != null &&
-                connectivityManager.activeNetworkInfo!!
-                    .isConnectedOrConnecting
-            )
-                return true
+        val capabilities = connectivityManager
+            .getNetworkCapabilities(connectivityManager.activeNetwork)
+            ?: return false
+        return when {
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+            else -> false
         }
-        return false
     }
-
 
     private fun makeToast(context: Context, text: String) =
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
