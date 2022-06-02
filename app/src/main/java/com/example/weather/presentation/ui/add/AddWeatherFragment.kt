@@ -1,4 +1,4 @@
-package com.example.weather.ui.add
+package com.example.weather.presentation.ui.add
 
 import android.content.Context
 import android.os.Bundle
@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.example.weather.R
 import com.example.weather.databinding.FragmentAddWeatherBinding
-import com.example.weather.ui.weather.vm.WeatherViewModel
+import com.example.weather.presentation.ui.weather.vm.WeatherViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject

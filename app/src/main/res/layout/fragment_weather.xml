@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="@color/nord_whitish"
-    tools:context=".ui.weather.WeatherFragment">
+    tools:context=".presentation.ui.weather.WeatherFragment">
 
 
     <TextView

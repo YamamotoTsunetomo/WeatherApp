@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/bottom_sheet_dialog_shape"
     android:padding="32dp"
-    tools:context=".ui.add.AddWeatherFragment">
+    tools:context=".presentation.ui.add.AddWeatherFragment">
 
     <EditText
         android:id="@+id/etAddTitle"

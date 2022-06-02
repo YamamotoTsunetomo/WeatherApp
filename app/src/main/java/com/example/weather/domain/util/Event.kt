@@ -1,4 +1,4 @@
-package com.example.weather.util
+package com.example.weather.domain.util
 
 data class Event<T>(private val value: T) {
     private var _isHandled: Boolean = false

@@ -1,4 +1,4 @@
-package com.example.weather.ui.weather
+package com.example.weather.presentation.ui.weather
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -17,9 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.R
 import com.example.weather.databinding.FragmentWeatherBinding
-import com.example.weather.ui.weather.adapter.WeatherAdapter
-import com.example.weather.ui.weather.vm.WeatherViewModel
-import com.example.weather.util.GlideImageLoader
+import com.example.weather.domain.util.GlideImageLoader
+import com.example.weather.presentation.ui.weather.adapter.WeatherAdapter
+import com.example.weather.presentation.ui.weather.vm.WeatherViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

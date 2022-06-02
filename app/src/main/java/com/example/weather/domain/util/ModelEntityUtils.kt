@@ -1,7 +1,7 @@
-package com.example.weather.util
+package com.example.weather.domain.util
 
-import com.example.weather.db.WeatherEntity
-import com.example.weather.model.WeatherUIModel
+import com.example.weather.data.db.WeatherEntity
+import com.example.weather.domain.model.WeatherUIModel
 
 object ModelEntityUtils {
     val fromModelToEntity: (WeatherUIModel) -> WeatherEntity = {

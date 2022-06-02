@@ -1,16 +1,16 @@
-package com.example.weather.ui.weather.vm
+package com.example.weather.presentation.ui.weather.vm
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weather.db.WeatherDao
-import com.example.weather.db.WeatherEntity
-import com.example.weather.model.OpenWeatherMapResponseData
-import com.example.weather.model.WeatherUIModel
-import com.example.weather.network.OpenWeatherMapService
-import com.example.weather.util.Event
-import com.example.weather.util.ModelEntityUtils
+import com.example.weather.data.db.WeatherDao
+import com.example.weather.data.db.WeatherEntity
+import com.example.weather.domain.model.OpenWeatherMapResponseData
+import com.example.weather.domain.model.WeatherUIModel
+import com.example.weather.data.network.OpenWeatherMapService
+import com.example.weather.domain.util.Event
+import com.example.weather.domain.util.ModelEntityUtils
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
