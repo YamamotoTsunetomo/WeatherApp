@@ -1,4 +1,4 @@
-package com.example.weather.ui.weather.adapter
+package com.example.weather.presentation.ui.weather.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.databinding.ItemWeatherBinding
-import com.example.weather.model.WeatherUIModel
-import com.example.weather.util.ImageLoader
+import com.example.weather.domain.model.WeatherUIModel
+import com.example.weather.domain.util.ImageLoader
 
 class WeatherAdapter(
     private val imageLoader: ImageLoader,

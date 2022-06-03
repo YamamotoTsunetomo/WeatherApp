@@ -1,9 +1,9 @@
 package com.example.weather.di
 
 import androidx.room.Room
-import com.example.weather.db.WeatherDatabase
-import com.example.weather.network.OpenWeatherMapService
-import com.example.weather.ui.weather.vm.WeatherViewModel
+import com.example.weather.data.db.WeatherDatabase
+import com.example.weather.data.network.OpenWeatherMapService
+import com.example.weather.presentation.ui.weather.vm.WeatherViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module

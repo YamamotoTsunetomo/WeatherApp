@@ -1,4 +1,4 @@
-package com.example.weather.util
+package com.example.weather.domain.util
 
 import android.widget.ImageView
 
