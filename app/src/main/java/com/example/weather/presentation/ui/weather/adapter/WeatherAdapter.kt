@@ -31,15 +31,12 @@ class WeatherAdapter(
             weatherData: WeatherUIModel,
         ) {
             itemView.setOnClickListener { onClickListener(weatherData) }
-            val imageUrl = getUrl(weatherData.icon)
+            val imageUrl = weatherData.icon
             imageLoader.loadImage(imageUrl, binding.ivIcon)
             binding.tvTitle.text = weatherData.locationName
             binding.tvDescription.text = weatherData.description
             binding.tvTemperature.text = weatherData.temperature
         }
-
-        private fun getUrl(icon: String): String =
-            "https://openweathermap.org/img/wn/${icon}@2x.png"
 
     }
 

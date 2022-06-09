@@ -12,4 +12,8 @@
     <color name="nord_black">#2E3440</color>
     <color name="nord_whitish">#D8DEE9</color>
     <color name="nord_subtle_blue">#5E81AC</color>
+    <color name="light_blue_400">#FF29B6F6</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="gray_400">#FFBDBDBD</color>
+    <color name="gray_600">#FF757575</color>
 </resources>

@@ -54,6 +54,10 @@ class WeatherViewModel(
     val removeEvent: LiveData<Event<Int>>
         get() = _removeEvent
 
+    private val _currentLocationWeather = MutableLiveData<WeatherUIModel?>(null)
+    val currentLocationWeather: LiveData<WeatherUIModel?>
+        get() = _currentLocationWeather
+
     // Set
     private suspend fun setWeathersFromApiAndStoreToDatabase() {
         getWeathersFromDatabaseAsync().await()
@@ -85,6 +89,11 @@ class WeatherViewModel(
             addWeather(it)
         }
     }
+
+    fun addCurrentLocationWeather(city: String) =
+        getWeatherFromApi(city) {
+            _currentLocationWeather.value = it
+        }
 
     // Remove
     private fun removeWeatherFromWeatherList(weatherUIModel: WeatherUIModel) {
@@ -129,7 +138,7 @@ class WeatherViewModel(
                                     resp.locationName,
                                     w.status,
                                     w.description,
-                                    w.icon,
+                                    getUrl(w.icon),
                                     kelvinToCelsius(resp.temperaturesData.temperature),
                                 )
                                 action(model)
@@ -141,4 +150,5 @@ class WeatherViewModel(
 
     // Aux
     private val kelvinToCelsius = { d: Double -> (d - 273.15).roundToInt().toString() + "\u2103" }
+    private val getUrl = { icon: String -> "https://openweathermap.org/img/wn/${icon}@2x.png" }
 }
