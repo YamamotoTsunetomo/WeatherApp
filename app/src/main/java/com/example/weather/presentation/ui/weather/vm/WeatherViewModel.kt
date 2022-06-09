@@ -1,5 +1,6 @@
 package com.example.weather.presentation.ui.weather.vm
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -67,10 +68,14 @@ class WeatherViewModel(
     }
 
     private suspend fun setWeathersFromDatabase() {
-        _weathers.value =
+        weatherList.clear()
+        weatherList.addAll(
             getWeathersFromDatabaseAsync().await()
                 .map { ModelEntityUtils.fromEntityToModel(it) }
                 .toMutableList()
+        )
+
+        _weathers.value = weatherList
     }
 
     // Add
