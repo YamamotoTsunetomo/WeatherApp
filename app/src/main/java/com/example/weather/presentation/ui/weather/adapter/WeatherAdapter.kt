@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +16,6 @@ import com.example.weather.domain.util.ImageLoader
 class WeatherAdapter(
     private val imageLoader: ImageLoader,
     private val context: Context,
-    private val onClickListener: (WeatherUIModel) -> Unit
 ) : ListAdapter<WeatherUIModel, WeatherAdapter.WeatherViewHolder>(DiffCallback()) {
     private val weatherData = mutableListOf<WeatherUIModel>()
     private var lastPosition = -1
@@ -24,13 +24,41 @@ class WeatherAdapter(
     class WeatherViewHolder(
         private val binding: ItemWeatherBinding,
         private val imageLoader: ImageLoader,
-        private val onClickListener: (WeatherUIModel) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
+
+        private var isVisible = false
+
+        private fun toggleVisibilityAndAnimate(view: View) {
+            view.isVisible = isVisible
+            val alpha = if (isVisible) 1f else 0f
+            view.animate().alpha(alpha)
+        }
+
 
         fun bindData(
             weatherData: WeatherUIModel,
         ) {
-            itemView.setOnClickListener { onClickListener(weatherData) }
+            itemView.setOnClickListener {
+//                onClickListener(weatherData)
+
+                with(binding) {
+                    toggleVisibilityAndAnimate(tvMinTemperature)
+                    toggleVisibilityAndAnimate(tvMaxTemperature)
+                    toggleVisibilityAndAnimate(tvPressure)
+                    toggleVisibilityAndAnimate(tvHumidity)
+                    toggleVisibilityAndAnimate(tvWindSpeed)
+                    toggleVisibilityAndAnimate(tvWindDegree)
+
+                    toggleVisibilityAndAnimate(drawableSun)
+                    toggleVisibilityAndAnimate(drawableMoon)
+                    toggleVisibilityAndAnimate(drawableBarometer)
+                    toggleVisibilityAndAnimate(drawableHumidity)
+                    toggleVisibilityAndAnimate(drawableWind)
+                    toggleVisibilityAndAnimate(drawableDegree)
+
+                    isVisible = !isVisible
+                }
+            }
 
             // main
             val imageUrl = weatherData.icon
@@ -72,7 +100,6 @@ class WeatherAdapter(
         WeatherViewHolder(
             ItemWeatherBinding.inflate(LayoutInflater.from(parent.context), parent, false),
             imageLoader,
-            onClickListener
         )
 
     override fun onBindViewHolder(holder: WeatherViewHolder, position: Int) {

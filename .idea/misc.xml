@@ -32,7 +32,7 @@
         <entry key="app/src/main/res/layout/fragment_edit_cities.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_weather.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_xml.xml" value="0.22" />
-        <entry key="app/src/main/res/layout/item_weather.xml" value="0.9" />
+        <entry key="app/src/main/res/layout/item_weather.xml" value="0.33" />
         <entry key="app/src/main/res/layout/item_weather_category.xml" value="0.67" />
         <entry key="app/src/main/res/layout/layout_header.xml" value="0.25" />
         <entry key="app/src/main/res/layout/sample_item_weather_view.xml" value="0.14444444444444443" />

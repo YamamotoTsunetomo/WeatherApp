@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:animateLayoutChanges="true"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
-    android:padding="8dp">
+    android:padding="12dp">
 
     <TextView
         android:id="@+id/tvTitle"
@@ -73,6 +74,7 @@
 
     <View
         android:id="@+id/drawableSun"
+        android:visibility="gone"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginBottom="4dp"
@@ -85,6 +87,7 @@
         android:id="@+id/tvMinTemperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:layout_marginTop="12dp"
         android:fontFamily="@font/poppins_light"
         android:textSize="32sp"
@@ -96,6 +99,7 @@
     <View
         android:id="@+id/drawableMoon"
         android:layout_width="32dp"
+        android:visibility="gone"
         android:layout_height="32dp"
         android:layout_marginBottom="4dp"
         android:background="@drawable/ic_moon"
@@ -104,6 +108,7 @@
         app:layout_constraintTop_toTopOf="@+id/tvMaxTemperature" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/tvMaxTemperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -118,6 +123,7 @@
     <TextView
         android:id="@+id/tvPressure"
         android:layout_width="wrap_content"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:fontFamily="@font/poppins_light"
@@ -127,6 +133,7 @@
         tools:text="55" />
 
     <View
+        android:visibility="gone"
         android:id="@+id/drawableBarometer"
         android:layout_width="32dp"
         android:layout_height="32dp"
@@ -137,6 +144,7 @@
         app:layout_constraintVertical_bias="0.363" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/tvHumidity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -150,6 +158,7 @@
     <View
         android:id="@+id/drawableHumidity"
         android:layout_width="32dp"
+        android:visibility="gone"
         android:layout_height="32dp"
         android:background="@drawable/ic_humidity"
         app:layout_constraintBottom_toBottomOf="@+id/tvHumidity"
@@ -163,6 +172,7 @@
         android:layout_marginBottom="4dp"
         android:background="@drawable/ic_wind"
         app:layout_constraintBottom_toBottomOf="@+id/tvWindSpeed"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvWindSpeed" />
 
@@ -173,12 +183,14 @@
         android:layout_marginTop="12dp"
         android:fontFamily="@font/poppins_light"
         android:textSize="32sp"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/drawableWind"
         app:layout_constraintTop_toBottomOf="@+id/tvPressure"
         tools:text="234" />
 
     <View
         android:id="@+id/drawableDegree"
+        android:visibility="gone"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginBottom="4dp"
@@ -190,6 +202,7 @@
     <TextView
         android:id="@+id/tvWindDegree"
         android:layout_width="wrap_content"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_light"
         android:textSize="32sp"
