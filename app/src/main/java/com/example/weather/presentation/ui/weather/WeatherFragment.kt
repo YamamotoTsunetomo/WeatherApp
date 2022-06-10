@@ -22,6 +22,7 @@ import com.example.weather.R
 import com.example.weather.databinding.FragmentWeatherBinding
 import com.example.weather.domain.model.WeatherUIModel
 import com.example.weather.domain.util.GlideImageLoader
+import com.example.weather.presentation.network_state.NetworkStateManager
 import com.example.weather.presentation.services.LocationService
 import com.example.weather.presentation.ui.weather.adapter.WeatherAdapter
 import com.example.weather.presentation.ui.weather.vm.WeatherViewModel
@@ -78,7 +79,7 @@ class WeatherFragment : Fragment() {
         if (weatherViewModel.currentLocationWeather.value == null)
             getCurrentLocation()
 
-        weatherViewModel.fetchData(isNetworkActive())
+        weatherViewModel.fetchData(NetworkStateManager.isNetworkActive.value!!)
         binding.btnNavigateToEdit.setOnClickListener {
             findNavController().navigate(R.id.action_weatherFragment_to_addCityFragment)
         }
@@ -109,6 +110,11 @@ class WeatherFragment : Fragment() {
         }
 
     private fun initObservers() {
+
+        NetworkStateManager.isNetworkActive.observe(viewLifecycleOwner) {
+            val msg = if (it) "active" else "lost"
+            makeToast(requireContext(), msg)
+        }
 
         weatherViewModel.currentLocationWeather.observe(viewLifecycleOwner) {
             it?.let {
@@ -173,20 +179,6 @@ class WeatherFragment : Fragment() {
             }
 
         }).attachToRecyclerView(binding.recyclerView)
-    }
-
-    private fun isNetworkActive(): Boolean {
-        val connectivityManager = (requireActivity()
-            .getSystemService(Context.CONNECTIVITY_SERVICE) as (ConnectivityManager))
-        val capabilities = connectivityManager
-            .getNetworkCapabilities(connectivityManager.activeNetwork)
-            ?: return false
-        return when {
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-            else -> false
-        }
     }
 
     private fun getCityFromLocation(lat: Double, lon: Double) =
