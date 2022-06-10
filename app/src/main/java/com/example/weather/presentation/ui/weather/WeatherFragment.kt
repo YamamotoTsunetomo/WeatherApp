@@ -6,7 +6,6 @@ import android.location.Geocoder
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -103,7 +102,6 @@ class WeatherFragment : Fragment() {
 
     private fun setCurrentLocationWeatherItem(weatherUIModel: WeatherUIModel) =
         with(binding) {
-            Log.d("ASDf", weatherUIModel.toString())
             wivCurrentLocation.setTitle(weatherUIModel.locationName)
             wivCurrentLocation.setDescription(weatherUIModel.description)
             wivCurrentLocation.setTemperature(weatherUIModel.temperature)
@@ -114,7 +112,6 @@ class WeatherFragment : Fragment() {
 
         weatherViewModel.currentLocationWeather.observe(viewLifecycleOwner) {
             it?.let {
-                Log.d("ASDf", it.toString())
                 setCurrentLocationWeatherItem(it)
             }
         }
