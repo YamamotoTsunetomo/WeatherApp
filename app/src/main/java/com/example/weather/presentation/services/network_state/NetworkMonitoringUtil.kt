@@ -1,4 +1,4 @@
-package com.example.weather.presentation.network_state
+package com.example.weather.presentation.services.network_state
 
 import android.content.Context
 import android.net.ConnectivityManager

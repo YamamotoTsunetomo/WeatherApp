@@ -3,8 +3,6 @@ package com.example.weather.presentation.ui.weather
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.content.Context
 import android.location.Geocoder
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,8 +20,8 @@ import com.example.weather.R
 import com.example.weather.databinding.FragmentWeatherBinding
 import com.example.weather.domain.model.WeatherUIModel
 import com.example.weather.domain.util.GlideImageLoader
-import com.example.weather.presentation.network_state.NetworkStateManager
-import com.example.weather.presentation.services.LocationService
+import com.example.weather.presentation.services.network_state.NetworkStateManager
+import com.example.weather.presentation.services.location.LocationService
 import com.example.weather.presentation.ui.weather.adapter.WeatherAdapter
 import com.example.weather.presentation.ui.weather.vm.WeatherViewModel
 import kotlinx.coroutines.launch

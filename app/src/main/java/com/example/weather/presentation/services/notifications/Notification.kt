@@ -1,4 +1,4 @@
-package com.example.weather.presentation.notifications
+package com.example.weather.presentation.services.notifications
 
 import android.app.NotificationManager
 import android.content.BroadcastReceiver

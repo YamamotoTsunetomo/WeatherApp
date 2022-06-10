@@ -1,4 +1,4 @@
-package com.example.weather.presentation.services
+package com.example.weather.presentation.services.location
 
 import android.Manifest
 import android.app.Service
