@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:animateLayoutChanges="true"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
-    android:padding="8dp">
+    android:padding="12dp">
 
     <TextView
         android:id="@+id/tvTitle"
@@ -23,17 +24,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_light"
-        tools:text="@string/cc"
         android:textColor="@color/nord_black"
-        android:textSize="20sp"
+        android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        tools:text="@string/cc" />
 
     <TextView
         android:id="@+id/tvTemperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
         android:fontFamily="@font/poppins_light"
         android:textColor="@color/nord_black"
         android:textSize="40sp"
@@ -47,5 +47,175 @@
         android:layout_height="50dp"
         app:layout_constraintStart_toEndOf="@+id/tvTitle"
         app:layout_constraintTop_toTopOf="@+id/tvTitle" />
+
+
+    <TextView
+        android:id="@+id/tvFeelsLike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/nord_black"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/poppins_light"
+        android:text="@string/feels_like"
+        android:textSize="24sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tvDescription"
+        app:layout_constraintEnd_toStartOf="@+id/tvFeelsLikeTemperature" />
+
+    <TextView
+        android:id="@+id/tvFeelsLikeTemperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_light"
+        android:textColor="@color/nord_black"
+        android:textSize="24sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tvFeelsLike"
+        app:layout_constraintEnd_toEndOf="@+id/tvTemperature"
+        tools:text="32" />
+
+    <View
+        android:id="@+id/drawableSun"
+        android:visibility="gone"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/ic_sun"
+        app:layout_constraintBottom_toBottomOf="@+id/tvMinTemperature"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvMinTemperature" />
+
+    <TextView
+        android:id="@+id/tvMinTemperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/poppins_light"
+        android:textSize="32sp"
+        app:layout_constraintStart_toEndOf="@+id/drawableSun"
+        app:layout_constraintTop_toBottomOf="@id/tvDescription"
+        tools:text="32" />
+
+
+    <View
+        android:id="@+id/drawableMoon"
+        android:layout_width="32dp"
+        android:visibility="gone"
+        android:layout_height="32dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/ic_moon"
+        app:layout_constraintBottom_toBottomOf="@id/tvMaxTemperature"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="@+id/tvMaxTemperature" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tvMaxTemperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/poppins_light"
+        android:textSize="32sp"
+        app:layout_constraintStart_toEndOf="@id/drawableMoon"
+        app:layout_constraintTop_toBottomOf="@id/tvDescription"
+        tools:text="98" />
+
+
+    <TextView
+        android:id="@+id/tvPressure"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/poppins_light"
+        android:textSize="32sp"
+        app:layout_constraintStart_toEndOf="@+id/drawableBarometer"
+        app:layout_constraintTop_toBottomOf="@+id/tvMaxTemperature"
+        tools:text="55" />
+
+    <View
+        android:visibility="gone"
+        android:id="@+id/drawableBarometer"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@drawable/ic_barometer"
+        app:layout_constraintBottom_toBottomOf="@+id/tvPressure"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvPressure"
+        app:layout_constraintVertical_bias="0.363" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tvHumidity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_light"
+        android:textSize="32sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvPressure"
+        app:layout_constraintStart_toEndOf="@+id/drawableHumidity"
+        app:layout_constraintTop_toTopOf="@+id/tvPressure"
+        tools:text="65" />
+
+    <View
+        android:id="@+id/drawableHumidity"
+        android:layout_width="32dp"
+        android:visibility="gone"
+        android:layout_height="32dp"
+        android:background="@drawable/ic_humidity"
+        app:layout_constraintBottom_toBottomOf="@+id/tvHumidity"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="@+id/tvHumidity" />
+
+    <View
+        android:id="@+id/drawableWind"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/ic_wind"
+        app:layout_constraintBottom_toBottomOf="@+id/tvWindSpeed"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvWindSpeed" />
+
+    <TextView
+        android:id="@+id/tvWindSpeed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/poppins_light"
+        android:textSize="32sp"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@+id/drawableWind"
+        app:layout_constraintTop_toBottomOf="@+id/tvPressure"
+        tools:text="234" />
+
+    <View
+        android:id="@+id/drawableDegree"
+        android:visibility="gone"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/ic_degree"
+        app:layout_constraintBottom_toBottomOf="@id/tvWindDegree"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="@id/tvWindDegree" />
+
+    <TextView
+        android:id="@+id/tvWindDegree"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_light"
+        android:textSize="32sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvWindSpeed"
+        app:layout_constraintStart_toEndOf="@+id/drawableDegree"
+        app:layout_constraintTop_toTopOf="@+id/tvWindSpeed"
+        tools:text="11" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

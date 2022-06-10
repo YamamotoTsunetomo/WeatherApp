@@ -7,5 +7,7 @@ data class OpenWeatherMapResponseData(
     val locationName: String,
     val weather: List<OpenWeatherMapWeatherData>,
     @field:Json(name = "main")
-    val temperaturesData: OpenWeatherMapTemperaturesData
+    val temperaturesData: OpenWeatherMapTemperaturesData,
+    @field:Json(name = "wind")
+    val windData: OpenWeatherMapWindData,
 )

@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -40,14 +39,7 @@ class WeatherFragment : Fragment() {
         WeatherAdapter(
             GlideImageLoader(requireContext()),
             requireContext()
-        ) { weatherData ->
-            val messageBody = weatherData.locationName
-            AlertDialog.Builder(requireContext())
-                .setTitle("TITLE")
-                .setMessage(messageBody)
-                .setPositiveButton("OK") { _, _ -> }
-                .show()
-        }
+        )
     }
 
     private val locationService by lazy {
@@ -100,11 +92,18 @@ class WeatherFragment : Fragment() {
     }
 
     private fun setCurrentLocationWeatherItem(weatherUIModel: WeatherUIModel) =
-        with(binding) {
-            wivCurrentLocation.setTitle(weatherUIModel.locationName)
-            wivCurrentLocation.setDescription(weatherUIModel.description)
-            wivCurrentLocation.setTemperature(weatherUIModel.temperature)
-            wivCurrentLocation.setImage(GlideImageLoader(requireContext()), weatherUIModel.icon)
+        with(binding.wivCurrentLocation) {
+            setTitle(weatherUIModel.locationName)
+            setDescription(weatherUIModel.description)
+            setTemperature(weatherUIModel.temperature)
+            setImage(GlideImageLoader(requireContext()), weatherUIModel.icon)
+            setMinTemperature(weatherUIModel.minTemperature)
+            setMaxTemperature(weatherUIModel.maxTemperature)
+            setPressure(weatherUIModel.pressure)
+            setHumidity(weatherUIModel.humidity)
+            setWindSpeed(weatherUIModel.windSpeed)
+            setWindDegree(weatherUIModel.windDegree)
+            showAdditionalComponents()
         }
 
     private fun initObservers() {
