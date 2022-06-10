@@ -7,7 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.weather.databinding.ActivityMainBinding
-import com.example.weather.presentation.notifications.Notification
+import com.example.weather.presentation.services.notifications.Notification
 import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
