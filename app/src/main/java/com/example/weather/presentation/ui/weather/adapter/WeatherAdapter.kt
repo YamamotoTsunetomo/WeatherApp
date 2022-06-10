@@ -31,11 +31,38 @@ class WeatherAdapter(
             weatherData: WeatherUIModel,
         ) {
             itemView.setOnClickListener { onClickListener(weatherData) }
+
+            // main
             val imageUrl = weatherData.icon
-            imageLoader.loadImage(imageUrl, binding.ivIcon)
-            binding.tvTitle.text = weatherData.locationName
-            binding.tvDescription.text = weatherData.description
-            binding.tvTemperature.text = weatherData.temperature
+            val locationName = weatherData.locationName
+            val description = weatherData.description
+
+            // temperature
+            val temperature = weatherData.temperature
+            val feelsLike = weatherData.feelsLike
+            val minTemperature = weatherData.minTemperature
+            val maxTemperature = weatherData.maxTemperature
+            val pressure = weatherData.pressure
+            val humidity = weatherData.humidity
+
+            // wind
+            val windSpeed = weatherData.windSpeed
+            val windDegree = weatherData.windDegree
+
+            with(binding) {
+                imageLoader.loadImage(imageUrl, ivIcon)
+                tvTitle.text = locationName
+                tvDescription.text = description
+                tvTemperature.text = temperature
+                tvFeelsLikeTemperature.text = feelsLike
+                tvMinTemperature.text = minTemperature
+                tvMaxTemperature.text = maxTemperature
+                tvPressure.text = pressure
+                tvHumidity.text = humidity
+                tvWindSpeed.text = windSpeed
+                tvWindDegree.text = windDegree
+            }
+
         }
 
     }

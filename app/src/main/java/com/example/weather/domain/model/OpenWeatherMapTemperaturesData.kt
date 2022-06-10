@@ -8,9 +8,9 @@ data class OpenWeatherMapTemperaturesData(
     @field:Json(name = "feels_like")
     val feelsLike: Double,
     @field:Json(name = "temp_min")
-    val tempMin: Double,
+    val minTemperature: Double,
     @field:Json(name = "temp_max")
-    val tempMax: Double,
+    val maxTemperature: Double,
     val pressure: Int,
     val humidity: Int
 )

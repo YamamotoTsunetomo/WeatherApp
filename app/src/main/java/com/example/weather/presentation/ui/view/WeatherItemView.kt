@@ -4,17 +4,16 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.example.weather.databinding.CurrentLocationWeatherViewBinding
 import com.example.weather.databinding.ItemWeatherBinding
 import com.example.weather.domain.util.ImageLoader
 
-class CurrentLocationWeatherView @JvmOverloads constructor(
+class WeatherItemView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attributeSet, defStyleAttr) {
 
-    private val binding = CurrentLocationWeatherViewBinding
+    private val binding = ItemWeatherBinding
         .inflate(LayoutInflater.from(context), this, true)
 
     fun setTitle(title: String) {

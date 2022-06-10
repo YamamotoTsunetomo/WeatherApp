@@ -136,23 +136,41 @@ class WeatherViewModel(
                 ) {
                     if (response.isSuccessful)
                         response.body()?.let { resp ->
-                            val weather = resp.weather.firstOrNull()
-                            weather?.let { w ->
-                                val model = WeatherUIModel(
-                                    resp.locationName,
-                                    w.status,
-                                    w.description,
-                                    getUrl(w.icon),
-                                    kelvinToCelsius(resp.temperaturesData.temperature),
-                                )
-                                action(model)
-                            }
+                            val weather = resp.weather.first()
+                            val wind = resp.windData
+
+                            val model = WeatherUIModel(
+                                // main
+                                locationName = resp.locationName,
+                                status = weather.status,
+                                description = weather.description,
+                                icon = getUrl(weather.icon),
+
+                                // temperature
+                                temperature = kelvinToCelsius(resp.temperaturesData.temperature),
+                                feelsLike = kelvinToCelsius(resp.temperaturesData.feelsLike),
+                                minTemperature = kelvinToCelsius(resp.temperaturesData.minTemperature),
+                                maxTemperature = kelvinToCelsius(resp.temperaturesData.maxTemperature),
+                                pressure = "${resp.temperaturesData.pressure}p",
+                                humidity = "${resp.temperaturesData.humidity}%",
+
+                                // wind
+                                windSpeed = "${wind.windSpeed.roundToInt()}km/h",
+                                windDegree = "${wind.windDegree.toInt()}$DEGREE",
+                            )
+                            action(model)
                         }
                 }
             })
     }
 
     // Aux
-    private val kelvinToCelsius = { d: Double -> (d - 273.15).roundToInt().toString() + "\u2103" }
+    private val kelvinToCelsius = { d: Double -> "${(d - 273.15).roundToInt()}$DEGREE_CELSIUS" }
     private val getUrl = { icon: String -> "https://openweathermap.org/img/wn/${icon}@2x.png" }
+
+    // Constants
+    companion object {
+        private const val DEGREE = "\u00B0"
+        private const val DEGREE_CELSIUS = "\u2103"
+    }
 }

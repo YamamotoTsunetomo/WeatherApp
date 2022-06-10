@@ -8,6 +8,6 @@ data class OpenWeatherMapResponseData(
     val weather: List<OpenWeatherMapWeatherData>,
     @field:Json(name = "main")
     val temperaturesData: OpenWeatherMapTemperaturesData,
+    @field:Json(name = "wind")
     val windData: OpenWeatherMapWindData,
-    val sysData: OpenWeatherMapSysData
 )
