@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weather.data.db.WeatherDao
 import com.example.weather.data.db.WeatherEntity
+import com.example.weather.data.network.OpenWeatherMapService
 import com.example.weather.domain.model.OpenWeatherMapResponseData
 import com.example.weather.domain.model.WeatherUIModel
-import com.example.weather.data.network.OpenWeatherMapService
 import com.example.weather.domain.util.Event
 import com.example.weather.domain.util.ModelEntityUtils
 import kotlinx.coroutines.async
@@ -54,6 +54,10 @@ class WeatherViewModel(
     val removeEvent: LiveData<Event<Int>>
         get() = _removeEvent
 
+    private val _currentLocationWeather = MutableLiveData<WeatherUIModel?>(null)
+    val currentLocationWeather: LiveData<WeatherUIModel?>
+        get() = _currentLocationWeather
+
     // Set
     private suspend fun setWeathersFromApiAndStoreToDatabase() {
         getWeathersFromDatabaseAsync().await()
@@ -63,10 +67,14 @@ class WeatherViewModel(
     }
 
     private suspend fun setWeathersFromDatabase() {
-        _weathers.value =
+        weatherList.clear()
+        weatherList.addAll(
             getWeathersFromDatabaseAsync().await()
                 .map { ModelEntityUtils.fromEntityToModel(it) }
                 .toMutableList()
+        )
+
+        _weathers.value = weatherList
     }
 
     // Add
@@ -85,6 +93,11 @@ class WeatherViewModel(
             addWeather(it)
         }
     }
+
+    fun addCurrentLocationWeather(city: String) =
+        getWeatherFromApi(city) {
+            _currentLocationWeather.value = it
+        }
 
     // Remove
     private fun removeWeatherFromWeatherList(weatherUIModel: WeatherUIModel) {
@@ -129,7 +142,7 @@ class WeatherViewModel(
                                     resp.locationName,
                                     w.status,
                                     w.description,
-                                    w.icon,
+                                    getUrl(w.icon),
                                     kelvinToCelsius(resp.temperaturesData.temperature),
                                 )
                                 action(model)
@@ -141,4 +154,5 @@ class WeatherViewModel(
 
     // Aux
     private val kelvinToCelsius = { d: Double -> (d - 273.15).roundToInt().toString() + "\u2103" }
+    private val getUrl = { icon: String -> "https://openweathermap.org/img/wn/${icon}@2x.png" }
 }

@@ -1,6 +1,8 @@
 package com.example.weather.presentation.ui.weather
 
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.content.Context
+import android.location.Geocoder
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
@@ -8,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -17,11 +20,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.R
 import com.example.weather.databinding.FragmentWeatherBinding
+import com.example.weather.domain.model.WeatherUIModel
 import com.example.weather.domain.util.GlideImageLoader
+import com.example.weather.presentation.services.LocationService
 import com.example.weather.presentation.ui.weather.adapter.WeatherAdapter
 import com.example.weather.presentation.ui.weather.vm.WeatherViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.*
 
 class WeatherFragment : Fragment() {
 
@@ -45,6 +51,14 @@ class WeatherFragment : Fragment() {
         }
     }
 
+    private val locationService by lazy {
+        LocationService()
+    }
+
+    private val geocoder by lazy {
+        Geocoder(requireContext(), Locale.getDefault())
+    }
+
     val binding: FragmentWeatherBinding
         get() = _binding!!
 
@@ -59,13 +73,48 @@ class WeatherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initObservers()
         initRecycler()
+
+
+        if (weatherViewModel.currentLocationWeather.value == null)
+            getCurrentLocation()
+
         weatherViewModel.fetchData(isNetworkActive())
         binding.btnNavigateToEdit.setOnClickListener {
             findNavController().navigate(R.id.action_weatherFragment_to_addCityFragment)
         }
     }
 
+    private fun getCurrentLocation() {
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) {
+            if (it) {
+                locationService.getLocation(requireContext())?.let { location ->
+                    val currentLocation = getCityFromLocation(
+                        location.latitude,
+                        location.longitude
+                    )
+                    weatherViewModel.addCurrentLocationWeather(currentLocation)
+                }
+            }
+        }.launch(ACCESS_COARSE_LOCATION)
+    }
+
+    private fun setCurrentLocationWeatherItem(weatherUIModel: WeatherUIModel) =
+        with(binding) {
+            wivCurrentLocation.setTitle(weatherUIModel.locationName)
+            wivCurrentLocation.setDescription(weatherUIModel.description)
+            wivCurrentLocation.setTemperature(weatherUIModel.temperature)
+            wivCurrentLocation.setImage(GlideImageLoader(requireContext()), weatherUIModel.icon)
+        }
+
     private fun initObservers() {
+
+        weatherViewModel.currentLocationWeather.observe(viewLifecycleOwner) {
+            it?.let {
+                setCurrentLocationWeatherItem(it)
+            }
+        }
 
         weatherViewModel.removeEvent.observe(viewLifecycleOwner) {
             it.getValue()?.let { pos ->
@@ -103,6 +152,7 @@ class WeatherFragment : Fragment() {
         binding.progressBar.visibility = View.GONE
         binding.recyclerView.visibility = View.VISIBLE
         binding.btnNavigateToEdit.visibility = View.VISIBLE
+        binding.wivCurrentLocation.visibility = View.VISIBLE
     }
 
     private fun setOnSwipeDelete() {
@@ -139,13 +189,19 @@ class WeatherFragment : Fragment() {
         }
     }
 
+    private fun getCityFromLocation(lat: Double, lon: Double) =
+        geocoder.getFromLocation(lat, lon, 1)[0]
+            .locality
+            .filter { it.isLetter() }
+
+
     private fun makeToast(context: Context, text: String) =
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
 
 
     override fun onDestroyView() {
         super.onDestroyView()
+        locationService.stopSelf()
         _binding = null
     }
-
 }

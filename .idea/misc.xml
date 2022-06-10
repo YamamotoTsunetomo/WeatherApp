@@ -27,6 +27,7 @@
         <entry key="app/src/main/res/layout/item_weather.xml" value="0.5" />
         <entry key="app/src/main/res/layout/item_weather_category.xml" value="0.67" />
         <entry key="app/src/main/res/layout/layout_header.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/sample_item_weather_view.xml" value="0.14444444444444443" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.33" />
       </map>
     </option>
